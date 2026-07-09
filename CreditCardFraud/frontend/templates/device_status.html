@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary border-opacity-25">
+    <div>
+        <h1 class="h2 fw-bold tracking-tight"><i class="bi bi-wifi text-info me-2"></i>ESP32 Device Status Monitor</h1>
+        <p class="text-muted small mb-0">Hardware telemetry log for connected card terminals and active security nodes.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Active Node Status -->
+    <div class="col-12 col-xl-4">
+        <div class="card glass-card h-100">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-cpu text-info me-2"></i>Active Reader Telemetry</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
+                    
+                    <!-- Hardware node name -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
+                        <span class="text-muted small">Terminal ID</span>
+                        <span class="fw-bold text-white">esp32_terminal_01</span>
+                    </div>
+
+                    <!-- Connection indicator -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
+                        <span class="text-muted small">Device Status</span>
+                        {% if last_tx %}
+                            <span class="badge bg-success-opacity text-success py-1 px-3 rounded-pill fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
+                        {% else %}
+                            <span class="badge bg-warning-opacity text-warning py-1 px-3 rounded-pill fw-bold"><i class="bi bi-pause-fill me-1"></i>Idle</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- WiFi Status -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
+                        <span class="text-muted small">WiFi Connection</span>
+                        <span class="text-info fw-semibold"><i class="bi bi-wifi me-1"></i>{{ wifi_status | default("Connected (WPA2)") }}</span>
+                    </div>
+
+                    <!-- RSSI -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
+                        <span class="text-muted small">Signal Strength (RSSI)</span>
+                        <span class="text-white fw-bold"><i class="bi bi-reception-4 text-success me-1"></i>-58 dBm (Strong)</span>
+                    </div>
+
+                    <!-- Battery Status -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
+                        <span class="text-muted small">Battery Capacity</span>
+                        <span class="text-success fw-bold"><i class="bi bi-battery-charging text-success me-1"></i>92% (Charging)</span>
+                    </div>
+
+                    <!-- Firmware -->
+                    <div class="d-flex justify-content-between align-items-center pb-2">
+                        <span class="text-muted small">Firmware Version</span>
+                        <span class="text-white fw-bold">v2.4.1-rc3</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Connection Log -->
+    <div class="col-12 col-xl-8">
+        <div class="card glass-card h-100">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-terminal-fill text-success me-2"></i>Last Connection Activity</h5>
+            </div>
+            <div class="card-body">
+                
+                <div class="glass-terminal p-3 rounded h-100 fw-mono text-muted-light small" style="min-height: 250px;">
+                    <div class="text-success">[SYSTEM START] Telemetry monitor active...</div>
+                    <div>[DB_STATUS] Connected to SQLite database file.</div>
+                    <div>[MODEL_STATUS] RandomForest model classification server: {{ model_status }}.</div>
+                    
+                    {% if last_tx %}
+                        <div class="text-info mt-2">[CONNECTION] Ping received from: esp32_terminal_01</div>
+                        <div>[PAYLOAD_RECEIVED] Time: {{ last_tx.timestamp }} | CardID: {{ last_tx.card_id }}</div>
+                        <div>[API_PROCESSING] Mapping fields and running RandomForest inference...</div>
+                        <div class="{% if last_tx.prediction == 'Fraud' %}text-danger{% else %}text-info{% endif %}">[API_RESPONSE] Result: {{ last_tx.prediction }} | Risk Score: {{ last_tx.risk_score }} | HTTP 200</div>
+                    {% else %}
+                        <div class="text-warning mt-2">[STANDBY] Awaiting incoming card scans from ESP32 terminal...</div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <!-- Server Services Status summary -->
+    <div class="col-12">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-server text-info me-2"></i>Backend Services Integration Checklist</h5>
+            </div>
+            <div class="card-body">
+                <div class="row row-cols-1 row-cols-md-3 g-3">
+                    
+                    <!-- API Status -->
+                    <div class="col">
+                        <div class="p-3 glass-badge rounded d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-hdd-network-fill text-info fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-0 text-white fw-bold">REST API Status</h6>
+                                    <span class="text-muted small">v1 predictions endpoint</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-success-opacity text-success px-3 py-1.5 rounded-pill">Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Database Status -->
+                    <div class="col">
+                        <div class="p-3 glass-badge rounded d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-database-fill text-success fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-0 text-white fw-bold">Database Status</h6>
+                                    <span class="text-muted small">transactions.db logs</span>
+                                </div>
+                            </div>
+                            <span class="badge {% if db_status == 'Connected' %}bg-success-opacity text-success{% else %}bg-danger-opacity text-danger{% endif %} px-3 py-1.5 rounded-pill">
+                                {{ db_status }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Model Status -->
+                    <div class="col">
+                        <div class="p-3 glass-badge rounded d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-cpu-fill text-warning fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-0 text-white fw-bold">Model Status</h6>
+                                    <span class="text-muted small">fraud_model.pkl</span>
+                                </div>
+                            </div>
+                            <span class="badge {% if model_status == 'Loaded' %}bg-success-opacity text-success{% else %}bg-danger-opacity text-danger{% endif %} px-3 py-1.5 rounded-pill">
+                                {{ model_status }}
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

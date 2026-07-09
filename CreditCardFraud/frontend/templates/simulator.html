@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary border-opacity-25">
+    <div>
+        <h1 class="h2 fw-bold tracking-tight"><i class="bi bi-cpu text-info me-2"></i>ESP32 Simulation Console</h1>
+        <p class="text-muted small mb-0">Mimic ESP32 IoT endpoints to test backend prediction pathways and database pipelines.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Simulator Triggers Column (1/2 width) -->
+    <div class="col-12 col-lg-5">
+        <div class="card glass-card h-100">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-play-circle text-info me-2"></i>IoT Simulation Triggers</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Both the simulated buttons below and future physical ESP32 micro-controllers communicate with the backend using the exact same REST API route: <code>POST /api/v1/predict</code>. No simulation-specific bypass code is used.
+                </p>
+                
+                <div class="d-flex flex-column gap-3 mt-4">
+                    <button id="simGenuineBtn" class="btn btn-info text-dark fw-bold py-3 hover-grow shadow d-flex align-items-center justify-content-center">
+                        <i class="bi bi-shield-check fs-4 me-2"></i> Simulate Genuine Transaction
+                    </button>
+                    
+                    <button id="simFraudBtn" class="btn btn-danger text-white fw-bold py-3 hover-grow shadow d-flex align-items-center justify-content-center">
+                        <i class="bi bi-shield-exclamation fs-4 me-2"></i> Simulate Fraud Transaction
+                    </button>
+                </div>
+                
+                <!-- Quick facts about future ESP32 connections -->
+                <div class="glass-alert alert-warning alert p-3 rounded mt-5 border border-secondary border-opacity-25">
+                    <div class="d-flex">
+                        <i class="bi bi-info-circle-fill fs-4 text-info me-3"></i>
+                        <div>
+                            <h6 class="fw-bold text-white mb-1">Scale-Ready Architecture</h6>
+                            <span class="small text-muted-light">When an ESP32 is physically connected, it will authenticate and post to this same endpoint. Status codes and models will scale seamlessly.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Communication logs and JSON viewer Column (1/2 width) -->
+    <div class="col-12 col-lg-7">
+        <div class="card glass-card h-100">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-terminal text-success me-2"></i>API Traffic & Payloads</h5>
+                <span class="badge bg-dark-opacity border border-secondary border-opacity-25 py-1.5 px-3 rounded-pill text-muted-light">Live Console</span>
+            </div>
+            <div class="card-body d-flex flex-column">
+                
+                <!-- JSON Request -->
+                <div class="mb-3 flex-grow-1">
+                    <label class="form-label small text-muted"><i class="bi bi-box-arrow-in-right text-info me-1"></i>Outgoing ESP32 JSON Request Payload</label>
+                    <pre class="glass-terminal p-3 rounded mb-0 text-info fw-mono" id="reqViewer">{
+  "status": "Waiting for simulation trigger..."
+}</pre>
+                </div>
+
+                <!-- JSON Response -->
+                <div class="flex-grow-1">
+                    <label class="form-label small text-muted"><i class="bi bi-box-arrow-left text-success me-1"></i>Incoming REST API JSON Response</label>
+                    <pre class="glass-terminal p-3 rounded mb-0 text-success fw-mono" id="resViewer">{
+  "status": "Waiting for prediction response..."
+}</pre>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const genBtn = document.getElementById("simGenuineBtn");
+        const fraudBtn = document.getElementById("simFraudBtn");
+        const reqViewer = document.getElementById("reqViewer");
+        const resViewer = document.getElementById("resViewer");
+
+        function simulate(type) {
+            reqViewer.innerText = "Generating payload...";
+            resViewer.innerText = "Awaiting REST API response...";
+            
+            // Call internal endpoint to get a mock ESP32 payload
+            fetch(`/get-mock-payload?type=${type}`)
+            .then(res => res.json())
+            .then(payload => {
+                reqViewer.innerText = JSON.stringify(payload, null, 2);
+                
+                // Fire POST to REST API
+                return fetch("/api/v1/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(res => {
+                resViewer.innerText = `HTTP ${res.status}\n\n` + JSON.stringify(res.body, null, 2);
+            })
+            .catch(err => {
+                reqViewer.innerText = "Error generating simulation payload.";
+                resViewer.innerText = "Connection failed:\n" + err.toString();
+                console.error("Simulation error:", err);
+            });
+        }
+
+        if (genBtn) {
+            genBtn.addEventListener("click", () => simulate("Genuine"));
+        }
+        if (fraudBtn) {
+            fraudBtn.addEventListener("click", () => simulate("Fraud"));
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary border-opacity-25">
+    <div>
+        <h1 class="h2 fw-bold tracking-tight"><i class="bi bi-activity text-info me-2"></i>Security Transaction Monitor</h1>
+        <p class="text-muted small mb-0">Live feed of processed records with an authorized manual simulation interface.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Manual Entry Form Column (1/3 width) -->
+    <div class="col-12 col-lg-4">
+        <div class="card glass-card h-100">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-file-earmark-plus text-info me-2"></i>Manual Transaction Log</h5>
+            </div>
+            <div class="card-body">
+                
+                <!-- Display status message if any -->
+                <div id="formFeedback" class="alert d-none glass-alert py-2 text-center small mb-3" role="alert"></div>
+                
+                <form id="manualTransactionForm" class="row g-3">
+                    
+                    <div class="col-12">
+                        <label for="card_id" class="form-label small text-muted">Card Identifier</label>
+                        <input type="text" class="form-control glass-input" id="card_id" required placeholder="card_8921_3920_4812">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="amount" class="form-label small text-muted">Amount ($)</label>
+                        <input type="number" step="0.01" class="form-control glass-input" id="amount" required placeholder="85.50">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="transaction_type" class="form-label small text-muted">Type (Target Class)</label>
+                        <select class="form-select glass-input text-white" id="transaction_type" required>
+                            <option value="Genuine" class="bg-dark text-white" selected>Genuine</option>
+                            <option value="Fraud" class="bg-dark text-white">Fraud</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="merchant" class="form-label small text-muted">Merchant Outlet</label>
+                        <input type="text" class="form-control glass-input" id="merchant" required placeholder="Target Store #102">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="location" class="form-label small text-muted">Location Name</label>
+                        <input type="text" class="form-control glass-input" id="location" required placeholder="New York, USA">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="device_id" class="form-label small text-muted">Reader Device ID</label>
+                        <input type="text" class="form-control glass-input" id="device_id" required placeholder="esp32_terminal_01">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="latitude" class="form-label small text-muted">Latitude</label>
+                        <input type="number" step="0.000001" class="form-control glass-input" id="latitude" required placeholder="40.7128">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="longitude" class="form-label small text-muted">Longitude</label>
+                        <input type="number" step="0.000001" class="form-control glass-input" id="longitude" required placeholder="-74.0060">
+                    </div>
+                    
+                    <div class="col-12 mt-4">
+                        {% if session.get('role') == 'Admin' %}
+                            <button type="submit" class="btn btn-info w-100 text-dark fw-semibold py-2">
+                                Process Prediction <i class="bi bi-shield-check ms-1"></i>
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary w-100 py-2" disabled>
+                                Process Prediction (Admin Only)
+                            </button>
+                            <div class="form-text small text-muted-opacity text-center mt-1"><i class="bi bi-lock-fill text-danger me-1"></i>Predicting manual logs is locked in Analyst Mode.</div>
+                        {% endif %}
+                    </div>
+                    
+                </form>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Transaction History Table (2/3 width) -->
+    <div class="col-12 col-lg-8">
+        <div class="card glass-card h-100">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-list-columns-reverse text-info me-2"></i>Security Logs</h5>
+                <button id="refreshLogsBtn" class="btn btn-sm btn-outline-info"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 520px;">
+                    <table class="table table-dark table-hover table-striped mb-0 text-white glass-table align-middle">
+                        <thead class="sticky-top bg-dark" style="z-index: 1;">
+                            <tr class="text-muted small">
+                                <th class="ps-4">Card ID</th>
+                                <th>Amount</th>
+                                <th>Merchant</th>
+                                <th>Time</th>
+                                <th>Location</th>
+                                <th>Risk Score</th>
+                                <th class="pe-4 text-end">Prediction</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionTableBody">
+                            {% if transactions %}
+                                {% for tx in transactions %}
+                                <tr>
+                                    <td class="ps-4 fw-mono text-info"><i class="bi bi-credit-card me-2"></i>{{ tx.card_id }}</td>
+                                    <td class="fw-semibold">${{ "%.2f"|format(tx.amount) }}</td>
+                                    <td class="text-muted-light">{{ tx.merchant }}</td>
+                                    <td>{{ tx.timestamp.split(' ')[1] if ' ' in tx.timestamp else tx.timestamp }}</td>
+                                    <td><i class="bi bi-geo-alt-fill text-muted me-1"></i>{{ tx.location }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2 small fw-semibold">{{ tx.risk_score }}</span>
+                                            <div class="progress w-100 bg-dark-opacity" style="height: 5px; min-width: 50px;">
+                                                <div class="progress-bar {% if tx.risk_score >= 0.8 %}bg-danger{% elif tx.risk_score >= 0.5 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ tx.risk_score * 100 }}%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <span class="badge {% if tx.prediction == 'Fraud' %}bg-danger-opacity text-danger{% else %}bg-success-opacity text-success{% endif %} py-1.5 px-3 rounded-pill fw-bold">
+                                            {{ tx.prediction }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox fs-2 mb-2 d-block"></i>
+                                        No transactions logged. Use the simulation console or manual entry to send records.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("manualTransactionForm");
+        const tableBody = document.getElementById("transactionTableBody");
+        const feedback = document.getElementById("formFeedback");
+        const refreshBtn = document.getElementById("refreshLogsBtn");
+
+        // Helper to format ISO time
+        function getISOTimestamp() {
+            const d = new Date();
+            return d.getFullYear() + "-" + 
+                String(d.getMonth()+1).padStart(2, '0') + "-" + 
+                String(d.getDate()).padStart(2, '0') + "T" + 
+                String(d.getHours()).padStart(2, '0') + ":" + 
+                String(d.getMinutes()).padStart(2, '0') + ":" + 
+                String(d.getSeconds()).padStart(2, '0');
+        }
+
+        // Auto-fill time to current ISO
+        const timeInput = getISOTimestamp();
+
+        // 1. Submit Form
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                feedback.className = "alert d-none"; // Reset feedback
+                
+                const payload = {
+                    card_id: document.getElementById("card_id").value,
+                    amount: parseFloat(document.getElementById("amount").value),
+                    merchant: document.getElementById("merchant").value,
+                    transaction_time: getISOTimestamp(),
+                    location: document.getElementById("location").value,
+                    device_id: document.getElementById("device_id").value,
+                    transaction_type: document.getElementById("transaction_type").value,
+                    latitude: parseFloat(document.getElementById("latitude").value),
+                    longitude: parseFloat(document.getElementById("longitude").value)
+                };
+
+                fetch("/api/v1/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                .then(res => {
+                    if (res.status === 200) {
+                        feedback.className = "alert alert-success glass-alert py-2 text-center small mb-3";
+                        feedback.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i>Pred: <strong>${res.body.prediction}</strong> (Risk: ${res.body.risk_score})`;
+                        form.reset();
+                        fetchLogs(); // refresh log table
+                    } else {
+                        feedback.className = "alert alert-danger glass-alert py-2 text-center small mb-3";
+                        feedback.innerHTML = `<i class="bi bi-x-circle-fill me-2"></i>Error: ${res.body.error || "Failed to process prediction"}`;
+                    }
+                })
+                .catch(err => {
+                    feedback.className = "alert alert-danger glass-alert py-2 text-center small mb-3";
+                    feedback.innerHTML = `<i class="bi bi-x-circle-fill me-2"></i>Network connection error`;
+                    console.error("API error:", err);
+                });
+            });
+        }
+
+        // 2. Fetch logs from backend
+        function fetchLogs() {
+            fetch("/api/v1/transactions?limit=25")
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    tableBody.innerHTML = "";
+                    data.forEach(tx => {
+                        const time = tx.timestamp.includes(' ') ? tx.timestamp.split(' ')[1] : tx.timestamp;
+                        const riskClass = tx.risk_score >= 0.8 ? 'bg-danger' : (tx.risk_score >= 0.5 ? 'bg-warning' : 'bg-success');
+                        const predBadge = tx.prediction === 'Fraud' ? 'bg-danger-opacity text-danger' : 'bg-success-opacity text-success';
+                        
+                        tableBody.innerHTML += `
+                            <tr>
+                                <td class="ps-4 fw-mono text-info"><i class="bi bi-credit-card me-2"></i>${tx.card_id}</td>
+                                <td class="fw-semibold">$${parseFloat(tx.amount).toFixed(2)}</td>
+                                <td class="text-muted-light">${tx.merchant}</td>
+                                <td>${time}</td>
+                                <td><i class="bi bi-geo-alt-fill text-muted me-1"></i>${tx.location}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2 small fw-semibold">${tx.risk_score}</span>
+                                        <div class="progress w-100 bg-dark-opacity" style="height: 5px; min-width: 50px;">
+                                            <div class="progress-bar ${riskClass}" role="progressbar" style="width: ${tx.risk_score * 100}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <span class="badge ${predBadge} py-1.5 px-3 rounded-pill fw-bold">
+                                        ${tx.prediction}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            })
+            .catch(err => console.error("Error fetching logs:", err));
+        }
+
+        // 3. Refresh log handler
+        if (refreshBtn) {
+            refreshBtn.addEventListener("click", function() {
+                fetchLogs();
+            });
+        }
+    });
+</script>
+{% endblock %}

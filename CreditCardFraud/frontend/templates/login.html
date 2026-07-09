@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IoT-Ready AI-Driven Credit Card Fraud Detection System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body class="dark-theme d-flex align-items-center justify-content-center vh-100">
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4 col-sm-8">
+                
+                <!-- Login Card (Glassmorphism style) -->
+                <div class="card glass-card p-4 shadow-lg border-1">
+                    
+                    <div class="text-center mb-4">
+                        <i class="bi bi-shield-lock-fill text-gradient display-4 mb-2"></i>
+                        <h4 class="fw-bold tracking-wide mt-2">Apex<span class="text-info">Guard</span></h4>
+                        <p class="text-muted small">IoT-Ready AI Fraud Detection System</p>
+                    </div>
+                    
+                    <!-- Flash Message Alert -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} glass-alert text-center py-2 mb-3" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <!-- Login Form -->
+                    <form action="/login" method="POST">
+                        
+                        <div class="mb-3">
+                            <label for="role" class="form-label small text-muted">Access Level / Role</label>
+                            <div class="input-group glass-input-group">
+                                <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-fill"></i></span>
+                                <select class="form-select bg-transparent text-white border-0 py-2 ps-1" id="role" name="role" required>
+                                    <option value="Analyst" class="bg-dark text-white" selected>Analyst (Read-Only Monitor)</option>
+                                    <option value="Admin" class="bg-dark text-white">System Admin (Full Access)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label small text-muted">Access Password</label>
+                            <div class="input-group glass-input-group">
+                                <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-key-fill"></i></span>
+                                <input type="password" class="form-control bg-transparent text-white border-0 py-2 ps-1" id="password" name="password" placeholder="••••••••" required>
+                            </div>
+                            <div class="form-text small text-muted-opacity mt-1">Default passwords: <strong>analyst</strong> / <strong>admin</strong></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info w-100 py-2 fw-semibold text-dark shadow-sm hover-grow transition-base">
+                            Authorize Session <i class="bi bi-arrow-right-short fs-5 align-middle ms-1"></i>
+                        </button>
+                        
+                    </form>
+                    
+                </div>
+                
+                <p class="text-center text-muted-opacity small mt-4">
+                    Secure Banking Terminal &copy; 2026
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

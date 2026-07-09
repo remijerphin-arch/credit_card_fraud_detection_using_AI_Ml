@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config_app_name | default("IoT-Ready AI-Driven Credit Card Fraud Detection System") }}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Glassmorphism Stylesheet -->
+    <link href="/static/css/style.css" rel="stylesheet">
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="dark-theme">
+    
+    <div class="container-fluid overflow-hidden">
+        <div class="row vh-100 overflow-auto">
+            
+            <!-- Modern Sidebar -->
+            <div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 d-flex sticky-top glass-sidebar">
+                <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white vh-100 w-100">
+                    
+                    <!-- Sidebar Brand Logo -->
+                    <a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none pt-3">
+                        <i class="bi bi-shield-lock-fill fs-3 text-gradient me-2"></i>
+                        <span class="fs-5 d-none d-sm-inline fw-bold tracking-wide">Apex<span class="text-info">Guard</span></span>
+                    </a>
+                    
+                    <!-- Role Badge -->
+                    <div class="d-none d-sm-flex align-items-center mb-4 px-2 py-1 glass-badge rounded-pill w-100">
+                        <i class="bi bi-person-badge-fill text-info me-2"></i>
+                        <span class="small fw-semibold text-truncate">{{ session.get('role', 'Analyst') }} Mode</span>
+                    </div>
+                    
+                    <!-- Navigation Links -->
+                    <ul class="nav nav-pills flex-sm-column flex-row flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 my-sm-2 w-100 justify-content-center justify-content-sm-start" id="menu">
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/" class="nav-link px-0 px-sm-3 align-middle text-white {% if request.path == '/' %}active-pill{% endif %}">
+                                <i class="bi bi-speedometer2 fs-5 me-sm-2"></i>
+                                <span class="ms-1 d-none d-sm-inline">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/analytics" class="nav-link px-0 px-sm-3 align-middle text-white {% if request.path == '/analytics' %}active-pill{% endif %}">
+                                <i class="bi bi-bar-chart-line fs-5 me-sm-2"></i>
+                                <span class="ms-1 d-none d-sm-inline">Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/transaction-monitor" class="nav-link px-0 px-sm-3 align-middle text-white {% if request.path == '/transaction-monitor' %}active-pill{% endif %}">
+                                <i class="bi bi-activity fs-5 me-sm-2"></i>
+                                <span class="ms-1 d-none d-sm-inline">Transaction Monitor</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/esp32-simulation" class="nav-link px-0 px-sm-3 align-middle text-white {% if request.path == '/esp32-simulation' %}active-pill{% endif %}">
+                                <i class="bi bi-cpu fs-5 me-sm-2"></i>
+                                <span class="ms-1 d-none d-sm-inline">Simulation Console</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/esp32-status" class="nav-link px-0 px-sm-3 align-middle text-white {% if request.path == '/esp32-status' %}active-pill{% endif %}">
+                                <i class="bi bi-wifi fs-5 me-sm-2"></i>
+                                <span class="ms-1 d-none d-sm-inline">ESP32 Device Status</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/docs" class="nav-link px-0 px-sm-3 align-middle text-white {% if request.path == '/docs' %}active-pill{% endif %}">
+                                <i class="bi bi-file-earmark-code fs-5 me-sm-2"></i>
+                                <span class="ms-1 d-none d-sm-inline">API Docs</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="w-100 d-none d-sm-block mt-auto bg-secondary">
+                    
+                    <!-- Logout -->
+                    <div class="dropdown pb-4 pt-2 w-100 text-center text-sm-start">
+                        <a href="/logout" class="d-flex align-items-center text-white text-decoration-none px-3 py-2 rounded glass-button w-100 justify-content-center justify-content-sm-start">
+                            <i class="bi bi-box-arrow-right fs-5 me-sm-2 text-danger"></i>
+                            <span class="d-none d-sm-inline">Logout</span>
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="col d-flex flex-column h-sm-100 px-4 pt-3 overflow-auto">
+                <main class="row overflow-auto pt-2 pb-5">
+                    <div class="col-12">
+                        {% block content %}{% endblock %}
+                    </div>
+                </main>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

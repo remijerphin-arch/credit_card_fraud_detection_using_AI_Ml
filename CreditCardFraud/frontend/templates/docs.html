@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary border-opacity-25">
+    <div>
+        <h1 class="h2 fw-bold tracking-tight"><i class="bi bi-file-earmark-code text-info me-2"></i>REST API Documentation</h1>
+        <p class="text-muted small mb-0">Endpoints and integration requirements for connecting external ESP32 micro-controllers and client systems.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Endpoints List (Left Side) -->
+    <div class="col-12 col-lg-8">
+        <!-- POST /api/v1/predict -->
+        <div class="card glass-card mb-4 border-start border-info border-3">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-info text-dark me-3 py-2 px-3 fw-bold">POST</span>
+                    <h5 class="card-title fw-bold text-white mb-0">/api/v1/predict</h5>
+                </div>
+                <span class="text-muted small">Inference Gateway</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted-light small">Submit transaction data for real-time model prediction. Calculates risk scores and saves record to SQLite.</p>
+                
+                <h6 class="fw-bold text-white small mb-2">Request Body (JSON):</h6>
+                <pre class="glass-terminal p-3 rounded text-info small mb-3">{
+  "card_id": "string (Required)",
+  "amount": "float (Required)",
+  "merchant": "string (Required)",
+  "transaction_time": "string (Required) - Format: 'YYYY-MM-DDTHH:MM:SS' or 'HH:MM:SS'",
+  "location": "string (Required)",
+  "device_id": "string (Required)",
+  "transaction_type": "string (Required) - 'Genuine' | 'Fraud'",
+  "latitude": "float/string (Required)",
+  "longitude": "float/string (Required)"
+}</pre>
+
+                <h6 class="fw-bold text-white small mb-2">Success Response (200 OK):</h6>
+                <pre class="glass-terminal p-3 rounded text-success small mb-3">{
+  "prediction": "Fraud" | "Genuine",
+  "risk_score": 0.94
+}</pre>
+
+                <h6 class="fw-bold text-white small mb-2">Error Responses:</h6>
+                <ul class="text-muted-light small">
+                    <li><strong class="text-warning">HTTP 400 Bad Request</strong>: If missing JSON header, malformed JSON, or missing required fields.</li>
+                    <li><strong class="text-danger">HTTP 503 Service Unavailable</strong>: If model (`fraud_model.pkl`) is not trained on the system.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- GET /api/v1/transactions -->
+        <div class="card glass-card mb-4 border-start border-success border-3">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success text-white me-3 py-2 px-3 fw-bold">GET</span>
+                    <h5 class="card-title fw-bold text-white mb-0">/api/v1/transactions</h5>
+                </div>
+                <span class="text-muted small">Transaction Log</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted-light small">Retrieve logged transactions. Supports pagination using query parameters.</p>
+                
+                <h6 class="fw-bold text-white small mb-2">Query Parameters:</h6>
+                <ul class="text-muted-light small">
+                    <li><code>limit</code> (int, default=100) - Maximum transactions to return.</li>
+                    <li><code>offset</code> (int, default=0) - Row offset for pagination.</li>
+                </ul>
+
+                <h6 class="fw-bold text-white small mb-2">Response Example:</h6>
+                <pre class="glass-terminal p-3 rounded text-success small mb-0">[
+  {
+    "id": 1,
+    "card_id": "card_8921_3920_4812",
+    "amount": 85.50,
+    "merchant": "Target Store",
+    "location": "New York, USA",
+    "device_id": "esp32_terminal_01",
+    "transaction_time": "12:30:00",
+    "prediction": "Genuine",
+    "risk_score": 0.08,
+    "timestamp": "2026-07-09 07:20:58"
+  }
+]</pre>
+            </div>
+        </div>
+
+        <!-- GET /api/v1/stats -->
+        <div class="card glass-card mb-4 border-start border-success border-3">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success text-white me-3 py-2 px-3 fw-bold">GET</span>
+                    <h5 class="card-title fw-bold text-white mb-0">/api/v1/stats</h5>
+                </div>
+                <span class="text-muted small">Metrics Overview</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted-light small">Fetch summary counts, percentages, and trend lists for charting modules.</p>
+                
+                <h6 class="fw-bold text-white small mb-2">Response Example:</h6>
+                <pre class="glass-terminal p-3 rounded text-success small mb-0">{
+  "total_transactions": 25,
+  "today_transactions": 5,
+  "total_fraud": 2,
+  "today_fraud": 1,
+  "total_genuine": 23,
+  "today_genuine": 4,
+  "avg_risk_score": 0.12,
+  "fraud_percentage": 8.0,
+  "hourly_transactions": { "00": 0, "01": 0, ... },
+  "fraud_trend": { "2026-07-09": 1, ... },
+  "genuine_trend": { "2026-07-09": 4, ... }
+}</pre>
+            </div>
+        </div>
+
+        <!-- GET /api/v1/health -->
+        <div class="card glass-card border-start border-success border-3">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success text-white me-3 py-2 px-3 fw-bold">GET</span>
+                    <h5 class="card-title fw-bold text-white mb-0">/api/v1/health</h5>
+                </div>
+                <span class="text-muted small">Health Monitor</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted-light small">Verifies connectivity of server engine, SQLite database, and loading of the RandomForest pickle file.</p>
+                
+                <h6 class="fw-bold text-white small mb-2">Response Example:</h6>
+                <pre class="glass-terminal p-3 rounded text-success small mb-0">{
+  "server": "Running",
+  "database": "Connected",
+  "model": "Loaded"
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Status & Reference Info (Right Side) -->
+    <div class="col-12 col-lg-4">
+        <div class="card glass-card mb-4">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-info-circle text-info me-2"></i>Security Headers</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
+                    <div>
+                        <span class="badge bg-dark-opacity border border-secondary border-opacity-25 text-white mb-2">Content-Type</span>
+                        <p class="text-muted small mb-0">All request payloads must be dispatched with header: <code>Content-Type: application/json</code>.</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-dark-opacity border border-secondary border-opacity-25 text-white mb-2">Scalable Authentication</span>
+                        <p class="text-muted small mb-0">The API endpoints are prepared for future JWT (JSON Web Tokens) or static API-key headers in headers for production hardware deployment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-file-earmark-check text-success me-2"></i>Status Code Index</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-2 small">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-success fw-bold">200 OK</span>
+                        <span class="text-muted">Transaction processed</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-warning fw-bold">400 Bad Request</span>
+                        <span class="text-muted">Malformed JSON or validation fail</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-danger fw-bold">401 Unauthorized</span>
+                        <span class="text-muted">Role permissions locked</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-danger fw-bold">503 Service Unavailable</span>
+                        <span class="text-muted">Classifier model missing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
