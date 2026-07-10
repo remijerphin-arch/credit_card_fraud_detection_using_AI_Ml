@@ -350,3 +350,9 @@ html.light-theme .toast.glass-card {
         color: #000 !important;
     }
 }
+
+/* Dropdown Option Theme Overrides */
+html.light-theme select option {
+    background-color: #ffffff !important;
+    color: #1a1824 !important;
+}
