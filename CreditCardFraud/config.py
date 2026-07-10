@@ -12,6 +12,9 @@ class Config:
     # Database configuration
     DATABASE_PATH = os.path.join(BASE_DIR, "database", "transactions.db")
     
+    # Dataset configuration
+    DATASET_PATH = os.path.join(BASE_DIR, "datasets", "creditcard.csv")
+    
     # Model configuration
     MODEL_PATH = os.path.join(BASE_DIR, "models", "fraud_model.pkl")
     

@@ -30,6 +30,23 @@ def api_predict():
             
         payload = request.get_json()
         
+        # Parse telemetry data if available
+        device_id = payload.get("device_id", "")
+        battery = payload.get("battery")
+        rssi = payload.get("rssi")
+        firmware = payload.get("firmware")
+        is_simulated = payload.get("is_simulated", False)
+        
+        if "esp32" in device_id.lower() or "sim" in device_id.lower() or battery is not None:
+            from services.telemetry_service import update_telemetry
+            update_telemetry(
+                device_id=device_id,
+                battery=battery,
+                rssi=rssi,
+                firmware=firmware,
+                is_simulated=is_simulated
+            )
+        
         # Run prediction through inference pipeline (validates and maps features)
         result = predict_transaction(payload)
         

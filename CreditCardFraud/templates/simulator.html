@@ -92,6 +92,12 @@
             fetch(`/get-mock-payload?type=${type}`)
             .then(res => res.json())
             .then(payload => {
+                // Inject simulation telemetry
+                payload.is_simulated = true;
+                payload.battery = Math.floor(Math.random() * 15) + 85; // 85-100%
+                payload.rssi = -Math.floor(Math.random() * 25) - 55;  // -55 to -80 dBm
+                payload.firmware = "v2.4.1-rc3";
+
                 reqViewer.innerText = JSON.stringify(payload, null, 2);
                 
                 // Fire POST to REST API

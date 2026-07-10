@@ -21,41 +21,43 @@
                     <!-- Hardware node name -->
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
                         <span class="text-muted small">Terminal ID</span>
-                        <span class="fw-bold text-white">esp32_terminal_01</span>
+                        <span class="fw-bold text-white">{{ telemetry.device_id }}</span>
                     </div>
 
                     <!-- Connection indicator -->
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
                         <span class="text-muted small">Device Status</span>
-                        {% if last_tx %}
-                            <span class="badge bg-success-opacity text-success py-1 px-3 rounded-pill fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
+                        {% if telemetry.status == 'Offline' %}
+                            <span class="badge bg-danger-opacity text-danger py-1 px-3 rounded-pill fw-bold"><i class="bi bi-x-circle-fill me-1"></i>Offline</span>
+                        {% elif telemetry.status == 'Simulated' %}
+                            <span class="badge bg-warning-opacity text-warning py-1 px-3 rounded-pill fw-bold"><i class="bi bi-cpu me-1"></i>Simulated</span>
                         {% else %}
-                            <span class="badge bg-warning-opacity text-warning py-1 px-3 rounded-pill fw-bold"><i class="bi bi-pause-fill me-1"></i>Idle</span>
+                            <span class="badge bg-success-opacity text-success py-1 px-3 rounded-pill fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
                         {% endif %}
                     </div>
 
                     <!-- WiFi Status -->
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
                         <span class="text-muted small">WiFi Connection</span>
-                        <span class="text-info fw-semibold"><i class="bi bi-wifi me-1"></i>{{ wifi_status | default("Connected (WPA2)") }}</span>
+                        <span class="text-info fw-semibold"><i class="bi bi-wifi me-1"></i>{{ telemetry.connection }}</span>
                     </div>
 
                     <!-- RSSI -->
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
                         <span class="text-muted small">Signal Strength (RSSI)</span>
-                        <span class="text-white fw-bold"><i class="bi bi-reception-4 text-success me-1"></i>-58 dBm (Strong)</span>
+                        <span class="text-white fw-bold"><i class="bi bi-reception-4 text-success me-1"></i>{{ telemetry.rssi }}</span>
                     </div>
 
                     <!-- Battery Status -->
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2">
                         <span class="text-muted small">Battery Capacity</span>
-                        <span class="text-success fw-bold"><i class="bi bi-battery-charging text-success me-1"></i>92% (Charging)</span>
+                        <span class="text-success fw-bold"><i class="bi bi-battery-charging text-success me-1"></i>{{ telemetry.battery }}</span>
                     </div>
 
                     <!-- Firmware -->
                     <div class="d-flex justify-content-between align-items-center pb-2">
                         <span class="text-muted small">Firmware Version</span>
-                        <span class="text-white fw-bold">v2.4.1-rc3</span>
+                        <span class="text-white fw-bold">{{ telemetry.firmware }}</span>
                     </div>
 
                 </div>
@@ -76,13 +78,17 @@
                     <div>[DB_STATUS] Connected to SQLite database file.</div>
                     <div>[MODEL_STATUS] RandomForest model classification server: {{ model_status }}.</div>
                     
-                    {% if last_tx %}
-                        <div class="text-info mt-2">[CONNECTION] Ping received from: esp32_terminal_01</div>
-                        <div>[PAYLOAD_RECEIVED] Time: {{ last_tx.timestamp }} | CardID: {{ last_tx.card_id }}</div>
-                        <div>[API_PROCESSING] Mapping fields and running RandomForest inference...</div>
-                        <div class="{% if last_tx.prediction == 'Fraud' %}text-danger{% else %}text-info{% endif %}">[API_RESPONSE] Result: {{ last_tx.prediction }} | Risk Score: {{ last_tx.risk_score }} | HTTP 200</div>
+                    {% if telemetry.status == 'Offline' %}
+                        <div class="text-warning mt-3">[STANDBY] Waiting for ESP32 connection...</div>
                     {% else %}
-                        <div class="text-warning mt-2">[STANDBY] Awaiting incoming card scans from ESP32 terminal...</div>
+                        <div class="text-info mt-2">[CONNECTION] Active link established with device: {{ telemetry.device_id }}</div>
+                        <div>[TELEMETRY_STATUS] Status: {{ telemetry.status }} | Connection: {{ telemetry.connection }}</div>
+                        <div>[LAST_COMMUNICATION] Time: {{ telemetry.last_communication }}</div>
+                        {% if last_tx %}
+                            <div class="text-info mt-2">[PAYLOAD_RECEIVED] CardID: {{ last_tx.card_id }} | Amount: ${{ last_tx.amount }}</div>
+                            <div>[API_PROCESSING] Running RandomForest model classification...</div>
+                            <div class="{% if last_tx.prediction == 'Fraud' %}text-danger{% else %}text-info{% endif %}">[API_RESPONSE] Result: {{ last_tx.prediction }} | Risk: {{ last_tx.risk_score }} | HTTP 200</div>
+                        {% endif %}
                     {% endif %}
                 </div>
 

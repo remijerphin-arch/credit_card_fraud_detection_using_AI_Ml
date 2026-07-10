@@ -156,7 +156,6 @@ def esp32_simulation():
 @login_required
 def esp32_status():
     """Renders connection logs and status monitor metrics for external micro-controllers."""
-    # Get last transaction details to show live connection logs
     try:
         recent_txs = get_transactions(limit=1, offset=0)
         last_tx = recent_txs[0] if recent_txs else None
@@ -166,12 +165,24 @@ def esp32_status():
     db_status = "Connected"
     model_status = "Loaded" if os.path.exists(Config.MODEL_PATH) else "Not Trained"
     
+    from services.telemetry_service import get_telemetry
+    telemetry = get_telemetry()
+    
     return render_template(
         "device_status.html",
         last_tx=last_tx,
         db_status=db_status,
-        model_status=model_status
+        model_status=model_status,
+        telemetry=telemetry
     )
+
+@app.route("/dataset-info")
+@login_required
+def dataset_info():
+    """Renders Kaggle Credit Card Fraud dataset statistics and metadata information."""
+    from services.dataset_service import get_dataset_stats
+    stats = get_dataset_stats()
+    return render_template("dataset.html", stats=stats)
 
 @app.route("/docs")
 @login_required
