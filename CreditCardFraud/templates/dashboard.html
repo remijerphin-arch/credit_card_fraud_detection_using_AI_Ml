@@ -33,14 +33,29 @@
 {% endif %}
 
 <!-- Key Metrics Cards Row -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
-    <!-- Today's Transactions -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
+    <!-- Total Transactions -->
     <div class="col">
         <div class="card glass-card h-100 border-start border-info border-3">
             <div class="card-body py-3 d-flex justify-content-between align-items-center">
                 <div>
+                    <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Total Transactions</h6>
+                    <h3 class="card-title fw-bold text-white mb-0 animated-number" data-target="{{ stats.total_transactions }}">0</h3>
+                </div>
+                <div class="icon-circle bg-info-opacity text-info">
+                    <i class="bi bi-calculator fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Transactions -->
+    <div class="col">
+        <div class="card glass-card h-100 border-start border-primary border-3">
+            <div class="card-body py-3 d-flex justify-content-between align-items-center">
+                <div>
                     <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Today's Transactions</h6>
-                    <h3 class="card-title fw-bold text-white mb-0 animated-number" data-target="{{ stats.today_transactions }}">{{ stats.today_transactions }}</h3>
+                    <h3 class="card-title fw-bold text-white mb-0 animated-number" data-target="{{ stats.today_transactions }}">0</h3>
                 </div>
                 <div class="icon-circle bg-info-opacity text-info">
                     <i class="bi bi-credit-card-fill fs-4"></i>
@@ -49,13 +64,13 @@
         </div>
     </div>
     
-    <!-- Today's Fraud -->
+    <!-- Total Fraud -->
     <div class="col">
         <div class="card glass-card h-100 border-start border-danger border-3">
             <div class="card-body py-3 d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Today's Fraud</h6>
-                    <h3 class="card-title fw-bold text-danger mb-0 animated-number" data-target="{{ stats.today_fraud }}">{{ stats.today_fraud }}</h3>
+                    <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Fraud Transactions</h6>
+                    <h3 class="card-title fw-bold text-danger mb-0 animated-number" data-target="{{ stats.total_fraud }}">0</h3>
                 </div>
                 <div class="icon-circle bg-danger-opacity text-danger">
                     <i class="bi bi-shield-fill-x fs-4"></i>
@@ -64,13 +79,30 @@
         </div>
     </div>
 
+    <!-- Total Genuine -->
+    <div class="col">
+        <div class="card glass-card h-100 border-start border-success border-3">
+            <div class="card-body py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Genuine Transactions</h6>
+                    <h3 class="card-title fw-bold text-success mb-0 animated-number" data-target="{{ stats.total_genuine }}">0</h3>
+                </div>
+                <div class="icon-circle bg-success-opacity text-success">
+                    <i class="bi bi-shield-fill-check fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
     <!-- Fraud Percentage -->
     <div class="col">
         <div class="card glass-card h-100 border-start border-warning border-3">
             <div class="card-body py-3 d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Fraud Percentage</h6>
-                    <h3 class="card-title fw-bold text-warning mb-0"><span class="animated-number" data-target="{{ stats.fraud_percentage }}">{{ stats.fraud_percentage }}</span>%</h3>
+                    <h3 class="card-title fw-bold text-warning mb-0"><span class="animated-number" data-float="true" data-target="{{ stats.fraud_percentage }}">0.00</span>%</h3>
                 </div>
                 <div class="icon-circle bg-warning-opacity text-warning">
                     <i class="bi bi-percent fs-4"></i>
@@ -85,10 +117,40 @@
             <div class="card-body py-3 d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Average Risk Score</h6>
-                    <h3 class="card-title fw-bold text-purple mb-0 animated-number" data-target="{{ stats.avg_risk_score }}">{{ stats.avg_risk_score }}</h3>
+                    <h3 class="card-title fw-bold text-purple mb-0"><span class="animated-number" data-float="true" data-target="{{ stats.avg_risk_score }}">0.00</span></h3>
                 </div>
                 <div class="icon-circle bg-purple-opacity text-purple">
                     <i class="bi bi-graph-up-arrow fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ML Model Status -->
+    <div class="col">
+        <div class="card glass-card h-100 border-start border-info border-3">
+            <div class="card-body py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Model Status</h6>
+                    <h3 class="card-title fw-bold text-white mb-0 small">{{ model_status }}</h3>
+                </div>
+                <div class="icon-circle bg-info-opacity text-info">
+                    <i class="bi bi-cpu-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Status -->
+    <div class="col">
+        <div class="card glass-card h-100 border-start border-success border-3">
+            <div class="card-body py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="card-subtitle text-muted small fw-semibold uppercase tracking-wide mb-1">Database Status</h6>
+                    <h3 class="card-title fw-bold text-success mb-0 small">{{ db_status }}</h3>
+                </div>
+                <div class="icon-circle bg-success-opacity text-success">
+                    <i class="bi bi-database-fill fs-4"></i>
                 </div>
             </div>
         </div>
@@ -324,6 +386,30 @@
                     y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#888', stepSize: 2 } }
                 }
             }
+        });
+        // 4. Counter animation logic
+        const counters = document.querySelectorAll(".animated-number");
+        counters.forEach(counter => {
+            const target = parseFloat(counter.getAttribute("data-target")) || 0;
+            const isFloat = counter.getAttribute("data-float") === "true";
+            const speed = 1000; // time in ms
+            const increment = target / (speed / 16); // 60 fps
+            
+            const updateCount = () => {
+                const current = parseFloat(counter.innerText) || 0;
+                if (current < target) {
+                    const nextValue = current + increment;
+                    if (nextValue >= target) {
+                        counter.innerText = isFloat ? target.toFixed(2) : Math.round(target);
+                    } else {
+                        counter.innerText = isFloat ? nextValue.toFixed(2) : Math.round(nextValue);
+                        setTimeout(updateCount, 16);
+                    }
+                } else {
+                    counter.innerText = isFloat ? target.toFixed(2) : Math.round(target);
+                }
+            };
+            updateCount();
         });
     });
 </script>

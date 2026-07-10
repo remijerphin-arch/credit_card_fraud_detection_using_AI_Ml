@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="glass-card p-4 shadow-lg border-1">
+            <h2 class="fw-bold tracking-tight mb-2">About ApexGuard</h2>
+            <p class="text-muted">An IoT-ready Machine Learning system for real-time transaction validation.</p>
+            <hr class="border-secondary my-4">
+            
+            <h5 class="fw-bold text-info mb-3">Project Overview</h5>
+            <p class="text-muted-light mb-4">
+                ApexGuard addresses the critical engineering challenges of modern retail banking environments by bridging high-accuracy offline Machine Learning with ultra-low latency real-time IoT hardware networks. Traditional fraud detection pipelines run asynchronously, alerting users hours or days after a card compromise. ApexGuard is engineered to validate transactions in under 200ms right at the terminal node.
+            </p>
+            
+            <h5 class="fw-bold text-info mb-3">Project Objectives</h5>
+            <ul class="text-muted-light mb-4">
+                <li class="mb-2"><strong>Fraud Deterrence</strong>: Block unauthorized charge attempts at the hardware scanning point before transaction authorization is finalized.</li>
+                <li class="mb-2"><strong>REST API Interoperability</strong>: Expose highly structured endpoints compatible with standard lightweight embedded systems (like ESP32/ESP8266 development boards).</li>
+                <li class="mb-2"><strong>Data Ledger & Auditing</strong>: Capture and persist transaction logs in a parameterized SQLite storage container for analytics reporting.</li>
+                <li class="mb-2"><strong>Dynamic Feature Mapping</strong>: Map card scans, location coordinates, transaction times, and amount metrics into clean numerical features suitable for classification.</li>
+            </ul>
+
+            <h5 class="fw-bold text-info mb-3">Core Machine Learning Layer</h5>
+            <p class="text-muted-light mb-4">
+                The prediction service is driven by a serialization pipeline that evaluates features against a trained <strong>RandomForestClassifier</strong> model. The model is trained on the real Kaggle credit card transaction dataset comprising 284,807 events. The architecture features an isolated preprocessing mapper (`models/iot_feature_mapper.py`) that handles feature normalization, scaling, and PCA projections before feeding the 30-feature vector to the classifier.
+            </p>
+            
+            <h5 class="fw-bold text-info mb-3">Future IoT Development Scope</h5>
+            <p class="text-muted-light mb-0">
+                In future releases, physical ESP32 boards equipped with RFID-RC522 modules and SPI controllers will connect to ApexGuard's endpoints over local Wi-Fi, allowing physical cards or tags to trigger live transaction assessments, outputting instant security alerts on hardware LEDs or LCD displays.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

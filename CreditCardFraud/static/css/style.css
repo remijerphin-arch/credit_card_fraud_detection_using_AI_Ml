@@ -305,3 +305,45 @@ html.light-theme .glass-terminal {
 .transition-base {
     transition: all 0.2s ease-in-out;
 }
+
+/* Glassmorphism Toasts */
+.toast.glass-card {
+    background: rgba(25, 20, 50, 0.85) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: #fff !important;
+    backdrop-filter: blur(10px);
+}
+html.light-theme .toast.glass-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1a1824 !important;
+}
+
+/* Print Media Stylesheet */
+@media print {
+    .glass-sidebar, .card-header, #manualTransactionForm, .col-lg-4, #refreshLogsBtn, #exportCsvBtn, #exportPdfBtn, .navbar, .alert {
+        display: none !important;
+    }
+    .col-lg-8, .col-12 {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+    body {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    .glass-card {
+        background: #fff !important;
+        border: none !important;
+        color: #000 !important;
+        box-shadow: none !important;
+    }
+    .glass-table {
+        color: #000 !important;
+    }
+    .glass-table th, .glass-table td {
+        border-bottom: 1px solid #ddd !important;
+        color: #000 !important;
+    }
+}

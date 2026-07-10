@@ -86,6 +86,7 @@
         function simulate(type) {
             reqViewer.innerText = "Generating payload...";
             resViewer.innerText = "Awaiting REST API response...";
+            showLoader();
             
             // Call internal endpoint to get a mock ESP32 payload
             fetch(`/get-mock-payload?type=${type}`)
@@ -104,11 +105,25 @@
             })
             .then(response => response.json().then(data => ({ status: response.status, body: data })))
             .then(res => {
+                hideLoader();
                 resViewer.innerText = `HTTP ${res.status}\n\n` + JSON.stringify(res.body, null, 2);
+                
+                if (res.status === 200) {
+                    showToast("Simulation Processed", `Classification: <strong>${res.body.prediction}</strong> (Risk: ${res.body.risk_score})`, "success");
+                    if (res.body.prediction === 'Fraud') {
+                        showToast("Security Alert", "Mock ESP32 transaction flagged as Fraud!", "error");
+                    } else {
+                        showToast("Database Synced", "Mock transaction successfully logged to SQLite ledger.", "success");
+                    }
+                } else {
+                    showToast("Inference Error", res.body.error || "Failed to process simulation.", "error");
+                }
             })
             .catch(err => {
+                hideLoader();
                 reqViewer.innerText = "Error generating simulation payload.";
                 resViewer.innerText = "Connection failed:\n" + err.toString();
+                showToast("Connection Error", "Could not connect to security endpoint.", "error");
                 console.error("Simulation error:", err);
             });
         }

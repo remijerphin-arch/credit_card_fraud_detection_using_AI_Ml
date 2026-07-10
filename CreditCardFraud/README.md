@@ -115,16 +115,28 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 6. Project Screenshots Mockups
+## 6. Project Screenshots & Mockups
 
-### Premium Dashboard
+### Landing Page
+![Landing Page Screenshot](static/images/banner.png)
+
+### Login Page
+![Login Page Screenshot](static/images/login_placeholder.png) *Placeholder: Capture and place login screenshot here*
+
+### Dashboard Overview
 ![Dashboard Screenshot](static/images/dashboard.png)
 
-### Security Intelligence Analytics
+### Analytics Intelligence
 ![Analytics Screenshot](static/images/analytics.png)
+
+### Transaction Monitor (Manual Log)
+![Transaction Monitor Screenshot](static/images/monitor_placeholder.png) *Placeholder: Capture and place monitor screenshot here*
 
 ### ESP32 Simulation Console
 ![Simulation Screenshot](static/images/simulation.png)
+
+### ESP32 Device Status & Logs
+![Device Status Screenshot](static/images/status_placeholder.png) *Placeholder: Capture and place device status screenshot here*
 
 ---
 

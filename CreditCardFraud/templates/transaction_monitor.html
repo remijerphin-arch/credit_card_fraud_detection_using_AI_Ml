@@ -39,7 +39,7 @@
                             <option value="Fraud" class="bg-dark text-white">Fraud</option>
                         </select>
                     </div>
-
+                    
                     <div class="col-12">
                         <label for="merchant" class="form-label small text-muted">Merchant Outlet</label>
                         <input type="text" class="form-control glass-input" id="merchant" required placeholder="Target Store #102">
@@ -87,9 +87,40 @@
     <!-- Live Transaction History Table (2/3 width) -->
     <div class="col-12 col-lg-8">
         <div class="card glass-card h-100">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
-                <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-list-columns-reverse text-info me-2"></i>Security Logs</h5>
-                <button id="refreshLogsBtn" class="btn btn-sm btn-outline-info"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button>
+            <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title fw-bold text-white mb-0"><i class="bi bi-list-columns-reverse text-info me-2"></i>Security Logs</h5>
+                    <div class="d-flex gap-2">
+                        <button id="exportCsvBtn" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Export CSV</button>
+                        <button id="exportPdfBtn" class="btn btn-sm btn-outline-warning"><i class="bi bi-file-earmark-pdf me-1"></i>Print PDF</button>
+                        <button id="refreshLogsBtn" class="btn btn-sm btn-outline-info"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button>
+                    </div>
+                </div>
+                <!-- Search & Filters -->
+                <div class="row g-2 pt-2 border-top border-secondary border-opacity-25">
+                    <div class="col-md-3 col-sm-6">
+                        <input type="text" id="filterCardId" class="form-control form-control-sm glass-input" placeholder="Search Card ID...">
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <input type="text" id="filterMerchant" class="form-control form-control-sm glass-input" placeholder="Search Merchant...">
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <select id="filterPrediction" class="form-select form-select-sm glass-input text-white">
+                            <option value="">All Predictions</option>
+                            <option value="Genuine" class="bg-dark text-white">Genuine</option>
+                            <option value="Fraud" class="bg-dark text-white">Fraud</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <input type="date" id="filterDate" class="form-control form-control-sm glass-input text-white">
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <div class="input-group input-group-sm">
+                            <input type="number" id="filterMinAmount" class="form-control glass-input" placeholder="Min $">
+                            <input type="number" id="filterMaxAmount" class="form-control glass-input" placeholder="Max $">
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive" style="max-height: 520px;">
@@ -108,7 +139,7 @@
                         <tbody id="transactionTableBody">
                             {% if transactions %}
                                 {% for tx in transactions %}
-                                <tr>
+                                <tr data-date="{{ tx.timestamp.split(' ')[0] if ' ' in tx.timestamp else tx.timestamp }}">
                                     <td class="ps-4 fw-mono text-info"><i class="bi bi-credit-card me-2"></i>{{ tx.card_id }}</td>
                                     <td class="fw-semibold">${{ "%.2f"|format(tx.amount) }}</td>
                                     <td class="text-muted-light">{{ tx.merchant }}</td>
@@ -154,25 +185,23 @@
         const feedback = document.getElementById("formFeedback");
         const refreshBtn = document.getElementById("refreshLogsBtn");
 
-        // Helper to format ISO time
+        // Helpers to format ISO time
         function getISOTimestamp() {
             const d = new Date();
             return d.getFullYear() + "-" + 
                 String(d.getMonth()+1).padStart(2, '0') + "-" + 
-                String(d.getDate()).padStart(2, '0') + "T" + 
+                String(d.getDate()).padStart(2, '0') + " " + 
                 String(d.getHours()).padStart(2, '0') + ":" + 
                 String(d.getMinutes()).padStart(2, '0') + ":" + 
                 String(d.getSeconds()).padStart(2, '0');
         }
-
-        // Auto-fill time to current ISO
-        const timeInput = getISOTimestamp();
 
         // 1. Submit Form
         if (form) {
             form.addEventListener("submit", function (e) {
                 e.preventDefault();
                 feedback.className = "alert d-none"; // Reset feedback
+                showLoader(); // show spinner overlay
                 
                 const payload = {
                     card_id: document.getElementById("card_id").value,
@@ -195,19 +224,32 @@
                 })
                 .then(response => response.json().then(data => ({ status: response.status, body: data })))
                 .then(res => {
+                    hideLoader(); // hide spinner
                     if (res.status === 200) {
                         feedback.className = "alert alert-success glass-alert py-2 text-center small mb-3";
                         feedback.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i>Pred: <strong>${res.body.prediction}</strong> (Risk: ${res.body.risk_score})`;
+                        
+                        // Show notifications
+                        showToast("Prediction Processed", `Classification: <strong>${res.body.prediction}</strong> (Risk: ${res.body.risk_score})`, "success");
+                        if (res.body.prediction === 'Fraud') {
+                            showToast("Security Alert", "Fraudulent charge pattern caught in transaction validation flow!", "error");
+                        } else {
+                            showToast("Database Synced", "Genuine transaction successfully recorded into SQLite ledger.", "success");
+                        }
+                        
                         form.reset();
                         fetchLogs(); // refresh log table
                     } else {
                         feedback.className = "alert alert-danger glass-alert py-2 text-center small mb-3";
                         feedback.innerHTML = `<i class="bi bi-x-circle-fill me-2"></i>Error: ${res.body.error || "Failed to process prediction"}`;
+                        showToast("API Validation Failure", res.body.error || "Inference server error.", "error");
                     }
                 })
                 .catch(err => {
+                    hideLoader();
                     feedback.className = "alert alert-danger glass-alert py-2 text-center small mb-3";
                     feedback.innerHTML = `<i class="bi bi-x-circle-fill me-2"></i>Network connection error`;
+                    showToast("API Connection Error", "Unable to connect to security endpoint.", "error");
                     console.error("API error:", err);
                 });
             });
@@ -215,18 +257,21 @@
 
         // 2. Fetch logs from backend
         function fetchLogs() {
-            fetch("/api/v1/transactions?limit=25")
+            showLoader();
+            fetch("/api/v1/transactions?limit=50")
             .then(res => res.json())
             .then(data => {
+                hideLoader();
                 if (data && data.length > 0) {
                     tableBody.innerHTML = "";
                     data.forEach(tx => {
+                        const dateOnly = tx.timestamp.includes(' ') ? tx.timestamp.split(' ')[0] : tx.timestamp;
                         const time = tx.timestamp.includes(' ') ? tx.timestamp.split(' ')[1] : tx.timestamp;
                         const riskClass = tx.risk_score >= 0.8 ? 'bg-danger' : (tx.risk_score >= 0.5 ? 'bg-warning' : 'bg-success');
                         const predBadge = tx.prediction === 'Fraud' ? 'bg-danger-opacity text-danger' : 'bg-success-opacity text-success';
                         
                         tableBody.innerHTML += `
-                            <tr>
+                            <tr data-date="${dateOnly}">
                                 <td class="ps-4 fw-mono text-info"><i class="bi bi-credit-card me-2"></i>${tx.card_id}</td>
                                 <td class="fw-semibold">$${parseFloat(tx.amount).toFixed(2)}</td>
                                 <td class="text-muted-light">${tx.merchant}</td>
@@ -248,9 +293,14 @@
                             </tr>
                         `;
                     });
+                    // Re-apply filters on reload
+                    filterTable();
                 }
             })
-            .catch(err => console.error("Error fetching logs:", err));
+            .catch(err => {
+                hideLoader();
+                console.error("Error fetching logs:", err);
+            });
         }
 
         // 3. Refresh log handler
@@ -259,6 +309,84 @@
                 fetchLogs();
             });
         }
+
+        // 4. Search and Filter Logic
+        const filterCardId = document.getElementById("filterCardId");
+        const filterMerchant = document.getElementById("filterMerchant");
+        const filterPrediction = document.getElementById("filterPrediction");
+        const filterDate = document.getElementById("filterDate");
+        const filterMinAmount = document.getElementById("filterMinAmount");
+        const filterMaxAmount = document.getElementById("filterMaxAmount");
+
+        function filterTable() {
+            const cardVal = filterCardId.value.toLowerCase().trim();
+            const merchantVal = filterMerchant.value.toLowerCase().trim();
+            const predictionVal = filterPrediction.value;
+            const dateVal = filterDate.value; // YYYY-MM-DD
+            const minAmt = parseFloat(filterMinAmount.value) || 0;
+            const maxAmt = parseFloat(filterMaxAmount.value) || Infinity;
+
+            const rows = tableBody.querySelectorAll("tr");
+            rows.forEach(row => {
+                if (row.cells.length < 7) return;
+
+                const cardId = row.cells[0].innerText.toLowerCase();
+                const amount = parseFloat(row.cells[1].innerText.replace('$', '')) || 0;
+                const merchant = row.cells[2].innerText.toLowerCase();
+                const prediction = row.cells[6].innerText.trim();
+                const rowDate = row.getAttribute("data-date") || "";
+
+                const matchCard = cardId.includes(cardVal);
+                const matchMerchant = merchant.includes(merchantVal);
+                const matchPrediction = predictionVal === "" || prediction === predictionVal;
+                const matchAmount = amount >= minAmt && amount <= maxAmt;
+                const matchDate = dateVal === "" || rowDate.startsWith(dateVal);
+
+                if (matchCard && matchMerchant && matchPrediction && matchAmount && matchDate) {
+                    row.classList.remove("d-none");
+                } else {
+                    row.classList.add("d-none");
+                }
+            });
+        }
+
+        // Attach listeners to filter inputs
+        [filterCardId, filterMerchant, filterPrediction, filterDate, filterMinAmount, filterMaxAmount].forEach(input => {
+            if (input) {
+                input.addEventListener("input", filterTable);
+                input.addEventListener("change", filterTable);
+            }
+        });
+
+        // 5. CSV Export logic
+        document.getElementById("exportCsvBtn").addEventListener("click", function() {
+            let csv = ["Card ID,Amount,Merchant,Timestamp,Location,Risk Score,Prediction"];
+            const rows = tableBody.querySelectorAll("tr:not(.d-none)");
+            rows.forEach(row => {
+                if (row.cells.length < 7) return;
+                const cardId = row.cells[0].innerText.replace(/[\n\r]+/g, '').trim();
+                const amount = row.cells[1].innerText.replace('$', '').trim();
+                const merchant = row.cells[2].innerText.replace(',', '').trim();
+                const timestamp = row.cells[3].innerText.trim();
+                const location = row.cells[4].innerText.trim();
+                const risk = row.cells[5].querySelector("span").innerText.trim();
+                const prediction = row.cells[6].innerText.trim();
+                csv.push(`"${cardId}",${amount},"${merchant}","${timestamp}","${location}",${risk},"${prediction}"`);
+            });
+            const blob = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "apexguard_transactions.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Export Successful", "Transactions log successfully exported as CSV file.", "success");
+        });
+
+        // 6. PDF Export / Print logic
+        document.getElementById("exportPdfBtn").addEventListener("click", function() {
+            window.print();
+        });
     });
 </script>
 {% endblock %}

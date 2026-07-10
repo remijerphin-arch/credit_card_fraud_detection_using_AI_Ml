@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row min-vh-75 align-items-center justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="glass-card p-5 shadow-lg border-1 my-5 hover-grow">
+            <i class="bi bi-exclamation-octagon-fill text-gradient display-1 mb-4"></i>
+            <h1 class="display-5 fw-bold text-white mb-2">404</h1>
+            <h4 class="fw-bold tracking-wide text-info mb-3">Endpoint Not Found</h4>
+            <p class="text-muted-light mb-4">
+                The requested URL or routing endpoint does not exist on this security node. It may have been relocated or restricted.
+            </p>
+            <a href="/" class="btn btn-info px-4 py-2 fw-semibold text-dark shadow-sm rounded-3">
+                <i class="bi bi-house-door-fill me-2"></i> Return to Terminal
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

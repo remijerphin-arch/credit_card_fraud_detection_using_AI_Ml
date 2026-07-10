@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="glass-card p-4 shadow-lg border-1">
+            <h2 class="fw-bold tracking-tight mb-2">System Information & Operational Health</h2>
+            <p class="text-muted">A secure overview of the server runtime metadata, database instances, and serialized ML model layers.</p>
+            <hr class="border-secondary my-4">
+            
+            <div class="table-responsive">
+                <table class="table glass-table align-middle">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th style="width: 40%;">Parameter Description</th>
+                            <th>Current System Value</th>
+                            <th>Status Badge</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white">
+                        <tr>
+                            <td>Python Version</td>
+                            <td class="fw-mono small">{{ python_version }}</td>
+                            <td><span class="badge bg-success-opacity text-success border border-success px-3 py-1 rounded-pill">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Flask Server Version</td>
+                            <td class="fw-mono small">v{{ flask_version }}</td>
+                            <td><span class="badge bg-success-opacity text-success border border-success px-3 py-1 rounded-pill">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Database Status (SQLite)</td>
+                            <td class="small">{{ db_status }}</td>
+                            <td><span class="badge bg-success-opacity text-success border border-success px-3 py-1 rounded-pill">Connected</span></td>
+                        </tr>
+                        <tr>
+                            <td>Machine Learning Classifier</td>
+                            <td class="small">RandomForestClassifier (n_estimators=100)</td>
+                            <td>
+                                {% if model_status == 'Loaded' %}
+                                <span class="badge bg-success-opacity text-success border border-success px-3 py-1 rounded-pill">Model Loaded</span>
+                                {% else %}
+                                <span class="badge bg-danger-opacity text-danger border border-danger px-3 py-1 rounded-pill">Missing</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>REST API Integration Version</td>
+                            <td class="fw-mono small">v{{ api_version }}</td>
+                            <td><span class="badge bg-info-opacity text-info border border-info px-3 py-1 rounded-pill">Standard v1</span></td>
+                        </tr>
+                        <tr>
+                            <td>Last Model Training Compile Time</td>
+                            <td class="small">{{ last_training_time }}</td>
+                            <td>
+                                {% if model_status == 'Loaded' %}
+                                <span class="badge bg-info-opacity text-info border border-info px-3 py-1 rounded-pill">Trained</span>
+                                {% else %}
+                                <span class="badge bg-warning-opacity text-warning border border-warning px-3 py-1 rounded-pill">Pending</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

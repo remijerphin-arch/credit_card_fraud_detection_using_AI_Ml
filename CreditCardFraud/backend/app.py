@@ -91,6 +91,11 @@ def logout():
     return redirect(url_for("login"))
 
 @app.route("/")
+def index():
+    """Renders public landing page for guest users."""
+    return render_template("landing.html")
+
+@app.route("/dashboard")
 @login_required
 def dashboard():
     """Renders main dashboard displaying metrics, trends, and recent transaction feeds."""
@@ -174,6 +179,46 @@ def docs():
     """Renders REST API endpoint schema documentation page."""
     return render_template("docs.html")
 
+@app.route("/about")
+def about():
+    """Renders public About page outlining project specs and objective."""
+    return render_template("about.html")
+
+@app.route("/contact")
+def contact():
+    """Renders public Contact page highlighting team details."""
+    return render_template("contact.html")
+
+@app.route("/system-info")
+@login_required
+def system_info():
+    """Renders system metrics page with Python, Flask, DB, and Model compile metadata."""
+    import platform
+    import time
+    from flask import __version__ as flask_version
+    
+    python_ver = platform.python_version()
+    db_status = "Connected"
+    
+    model_exists = os.path.exists(Config.MODEL_PATH)
+    model_status = "Loaded" if model_exists else "Not Trained"
+    
+    if model_exists:
+        mtime = os.path.getmtime(Config.MODEL_PATH)
+        training_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(mtime))
+    else:
+        training_time = "N/A (Model not trained yet)"
+        
+    return render_template(
+        "system_info.html",
+        python_version=python_ver,
+        flask_version=flask_version,
+        db_status=db_status,
+        model_status=model_status,
+        api_version=Config.API_VERSION,
+        last_training_time=training_time
+    )
+
 # Helper endpoint used by frontend javascript to fetch a random mock transaction payload
 @app.route("/get-mock-payload")
 @login_required
@@ -181,6 +226,15 @@ def get_mock_payload():
     tx_type = request.args.get("type", default="Genuine")
     payload = generate_transaction_payload(tx_type)
     return jsonify(payload)
+
+# Error handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template("500.html"), 500
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)

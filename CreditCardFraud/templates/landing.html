@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexGuard - IoT-Ready AI Credit Card Fraud Detection System</title>
+    
+    <!-- Custom Favicon -->
+    <link rel="icon" type="image/png" href="/static/favicon.ico">
+    
+    <!-- Immediate theme check to prevent flash -->
+    <script>
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        if (savedTheme === "light") {
+            document.documentElement.classList.add("light-theme");
+        }
+    </script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+
+    <style>
+        .hero-section {
+            padding: 100px 0 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(13, 202, 240, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .landing-nav {
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1050;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top landing-nav py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold tracking-wide d-flex align-items-center" href="/">
+                <i class="bi bi-shield-lock-fill fs-3 text-gradient me-2"></i>
+                <span>Apex<span class="text-info">Guard</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <a class="nav-link text-white small" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link text-white small" href="#architecture">Architecture</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link text-white small" href="#tech-stack">Tech Stack</a>
+                    </li>
+                    <li class="nav-item me-4">
+                        <button id="themeToggleBtn" class="btn btn-sm glass-button py-2 px-3 fw-semibold">
+                            <i id="themeToggleIcon" class="bi bi-sun-fill text-warning"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-info btn-sm py-2 px-4 fw-semibold text-dark rounded-pill" href="/login">
+                            Get Started <i class="bi bi-arrow-right-short fs-5 align-middle ms-1"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-glow"></div>
+        <div class="container pt-5">
+            <div class="row align-items-center justify-content-between g-5">
+                <div class="col-lg-6">
+                    <div class="glass-badge d-inline-block px-3 py-1 rounded-pill mb-4 small fw-semibold">
+                        <i class="bi bi-cpu text-info me-2"></i> IoT + Machine Learning Security
+                    </div>
+                    <h1 class="display-4 fw-extrabold tracking-tight mb-3">
+                        IoT-Ready <span class="text-gradient">AI-Driven</span> Fraud Detection System
+                    </h1>
+                    <p class="lead text-muted-light mb-4">
+                        A production-ready full-stack cybersecurity framework designed for real-time credit card transaction monitoring. Built with an optimized RandomForest classifier, standardized REST APIs, SQLite databases, and prepared for future physical ESP32 micro-controller terminals.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="/login" class="btn btn-info btn-lg px-4 py-3 fw-semibold text-dark shadow-sm hover-grow transition-base rounded-3">
+                            <i class="bi bi-play-circle-fill me-2"></i> Launch Application
+                        </a>
+                        <a href="/login" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold glass-button hover-grow transition-base rounded-3">
+                            <i class="bi bi-file-earmark-text-fill me-2"></i> View API Docs
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="glass-card p-4 text-center shadow-lg hover-grow">
+                        <img src="/static/images/banner.png" alt="ApexGuard Banner" class="img-fluid rounded shadow-sm mb-4">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="glass-badge py-3 rounded">
+                                    <h3 class="fw-bold text-info mb-1 count-number" data-target="9995">0</h3>
+                                    <span class="small text-muted">Test Accuracy %</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="glass-badge py-3 rounded">
+                                    <h3 class="fw-bold text-info mb-1 count-number" data-target="284807">0</h3>
+                                    <span class="small text-muted">Transactions Trained</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold tracking-tight mb-2">Key Core Features</h2>
+                <p class="text-muted">Explore the architectural features designed to scale for high-frequency payment networks.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card glass-card h-100 p-4 feature-card">
+                        <div class="icon-circle bg-info-opacity mb-4">
+                            <i class="bi bi-shield-fill-check fs-4 text-info"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">AI-based Fraud Detection</h5>
+                        <p class="small text-muted">Real-time classification based on a RandomForest model evaluated at 99.95% accuracy on Kaggle Credit Card transactions.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card glass-card h-100 p-4 feature-card">
+                        <div class="icon-circle bg-purple-opacity mb-4">
+                            <i class="bi bi-router-fill fs-4 text-purple"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">IoT-Ready API Integrations</h5>
+                        <p class="small text-muted">Exposes standardized, RESTful versioned endpoints (`POST /api/v1/predict`) designed for micro-controllers like ESP32.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card glass-card h-100 p-4 feature-card">
+                        <div class="icon-circle bg-success-opacity mb-4">
+                            <i class="bi bi-speedometer2 fs-4 text-success"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Real-Time Telemetry Dashboard</h5>
+                        <p class="small text-muted">Monitor live metrics, Battery & Connection WiFi signals for simulation networks, and transactions ratios on a central control pane.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-5 bg-dark-opacity">
+        <div class="container text-center">
+            <div class="mb-5">
+                <h2 class="fw-bold tracking-tight mb-2">System Architecture Flow</h2>
+                <p class="text-muted">A fully decoupled, modular software workflow separating UI layers, model pipelines, and SQLite persistence.</p>
+            </div>
+            <div class="glass-card p-4 max-w-4xl mx-auto shadow">
+                <img src="/static/images/architecture.png" alt="Architecture Diagram" class="img-fluid rounded">
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech-stack" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold tracking-tight mb-2">Advanced Technology Stack</h2>
+                <p class="text-muted">A robust stack optimized for performance, scalability, and ease of hardware connection.</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-6 col-md-3 text-center">
+                    <div class="glass-card p-4">
+                        <i class="bi bi-file-code fs-1 text-info mb-2"></i>
+                        <h6 class="fw-semibold mb-1">Frontend</h6>
+                        <span class="small text-muted">Bootstrap 5 / Chart.js</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="glass-card p-4">
+                        <i class="bi bi-filetype-py fs-1 text-info mb-2"></i>
+                        <h6 class="fw-semibold mb-1">Backend</h6>
+                        <span class="small text-muted">Python / Flask</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="glass-card p-4">
+                        <i class="bi bi-cpu fs-1 text-info mb-2"></i>
+                        <h6 class="fw-semibold mb-1">Hardware</h6>
+                        <span class="small text-muted">ESP32 / RFID RC522</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="glass-card p-4">
+                        <i class="bi bi-database fs-1 text-info mb-2"></i>
+                        <h6 class="fw-semibold mb-1">Database</h6>
+                        <span class="small text-muted">SQLite Engine</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 border-top border-secondary mt-5">
+        <div class="container text-center">
+            <p class="small text-muted-opacity mb-0">
+                ApexGuard Banking Security Platform &copy; 2026. Distributed under the MIT License.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Animations and Theme Toggler -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Theme toggle logic
+            const themeBtn = document.getElementById("themeToggleBtn");
+            const themeIcon = document.getElementById("themeToggleIcon");
+            
+            themeBtn.addEventListener("click", function() {
+                if (document.documentElement.classList.contains("light-theme")) {
+                    document.documentElement.classList.remove("light-theme");
+                    localStorage.setItem("theme", "dark");
+                    themeIcon.className = "bi bi-sun-fill text-warning";
+                } else {
+                    document.documentElement.classList.add("light-theme");
+                    localStorage.setItem("theme", "light");
+                    themeIcon.className = "bi bi-moon-stars-fill text-primary";
+                }
+            });
+
+            // Set initial state of icon
+            if (localStorage.getItem("theme") === "light") {
+                themeIcon.className = "bi bi-moon-stars-fill text-primary";
+            }
+
+            // Counter animation
+            const counters = document.querySelectorAll(".count-number");
+            counters.forEach(counter => {
+                const target = +counter.getAttribute("data-target");
+                const speed = 2000; // time in ms
+                const increment = target / (speed / 16); // 60 fps
+                
+                const updateCount = () => {
+                    const current = +counter.innerText;
+                    if (current < target) {
+                        const nextValue = Math.ceil(current + increment);
+                        if (nextValue >= target) {
+                            if (target === 9995) {
+                                counter.innerText = "99.95";
+                            } else {
+                                counter.innerText = target;
+                            }
+                        } else {
+                            if (target === 9995) {
+                                counter.innerText = (nextValue / 100).toFixed(2);
+                            } else {
+                                counter.innerText = nextValue;
+                            }
+                            setTimeout(updateCount, 16);
+                        }
+                    }
+                };
+                updateCount();
+            });
+        });
+    </script>
+</body>
+</html>
