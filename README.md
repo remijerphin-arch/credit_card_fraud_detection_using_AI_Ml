@@ -14,7 +14,7 @@
 
 ---
 
-The project has been implemented as an IoT-ready prototype featuring a modular architecture based on Machine Learning, REST APIs, SQLite, and a web-based dashboard. The software is designed to support future ESP32 integration through standardized REST API communication.
+The project has been developed as an IoT-ready AI-driven Credit Card Fraud Detection System featuring a modular software architecture. It integrates Machine Learning, REST APIs, SQLite, and a responsive web dashboard while preparing the platform for future ESP32-based IoT integration.
 
 ---
 
@@ -40,7 +40,27 @@ The project has been implemented as an IoT-ready prototype featuring a modular a
 
 ---
 
-## 3. System Architecture Overview
+## 3. About the Dataset
+
+### Context
+It is important that credit card companies are able to recognize fraudulent credit card transactions so that customers are not charged for items that they did not purchase.
+
+### Content
+The dataset contains transactions made by credit cards in September 2013 by European cardholders. This dataset presents transactions that occurred in two days, where we have 492 frauds out of 284,807 transactions. The dataset is highly unbalanced, with the positive class (frauds) accounting for 0.172% of all transactions.
+
+It contains only numerical input variables which are the result of a PCA transformation. Unfortunately, due to confidentiality issues, we cannot provide the original features and more background information about the data. Features V1, V2, … V28 are the principal components obtained with PCA. The only features which have not been transformed with PCA are 'Time' and 'Amount'. 
+* **'Time'** contains the seconds elapsed between each transaction and the first transaction in the dataset.
+* **'Amount'** is the transaction amount. This feature can be used for example-dependent cost-sensitive learning.
+* **'Class'** is the response variable and it takes value 1 in case of fraud and 0 otherwise.
+
+Given the class imbalance ratio, it is recommended to measure performance using the Area Under the Precision-Recall Curve (AUPRC).
+
+### Acknowledgements
+The dataset has been collected and analysed during a research collaboration of Worldline and the Machine Learning Group (http://mlg.ulb.ac.be) of ULB (Université Libre de Bruxelles).
+
+---
+
+## 4. System Architecture Overview
 
 ![Architecture Diagram](CreditCardFraud/static/images/architecture.png)
 
@@ -76,7 +96,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 4. Key Features
+## 5. Key Features
 
 ### Implemented Features
 * **AI-based Fraud Detection**: RandomForest classifier trained on Kaggle creditcard logs.
@@ -100,7 +120,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 5. Expected Output
+## 6. Expected Output
 
 * **Normal Transaction**:
   * Transaction accepted.
@@ -115,7 +135,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 6. Project Screenshots & Mockups
+## 7. Project Screenshots & Mockups
 
 ### Landing Page
 ![Landing Page Screenshot](CreditCardFraud/static/images/banner.png)
@@ -140,7 +160,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 7. Security Features
+## 8. Security Features
 
 * **Input Validation**: Strictly validates types and bounds on all incoming parameters before prediction processing.
 * **Server-side Validation**: Validates the presence of the model file and valid classification configurations before inference is triggered.
@@ -151,7 +171,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 8. System Requirements
+## 9. System Requirements
 
 * **Python**: 3.11+
 * **System Memory**: 8 GB RAM
@@ -161,7 +181,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 9. How to Run the Project
+## 10. How to Run the Project
 
 ### Step 1: Install dependencies
 Navigate to the root directory and install requirements:
@@ -188,13 +208,23 @@ python backend/app.py
 
 ### Step 5: Open the browser
 Navigate to:
-`http://127.0.0.1:5000`
+`http://127.0.0.1:5000` (Local Development Server)
 
-Log in using the provided Admin or Analyst credentials. Default demonstration credentials (e.g. usernames `Admin` / `Analyst` and passwords `admin` / `analyst`) can be modified through the application configuration.
+*Note: For production deployment, the application can be hosted on cloud platforms such as Render, Railway, or any Flask-compatible hosting service.*
 
 ---
 
-## 10. Example REST API Request
+## 11. Demo User Accounts
+
+Access levels are restricted to the following demonstration roles:
+* **Administrator** (Full credentials access for predictions and log writes)
+* **Analyst** (Read-only access for dashboards and system monitoring)
+
+*Default demonstration credentials are configurable through the application configuration and are intended only for academic testing.*
+
+---
+
+## 12. Example REST API Request
 
 ### Example IoT Transaction Payload:
 * **HTTP Method**: `POST`
@@ -233,7 +263,7 @@ Log in using the provided Admin or Analyst credentials. Default demonstration cr
 
 ---
 
-## 11. Future Hardware Note
+## 13. Future Hardware Note
 
 The current implementation provides a complete software prototype and an IoT-ready architecture. The backend, REST APIs, dashboard, and Machine Learning pipeline are fully prepared for future ESP32 integration.
 
@@ -243,7 +273,7 @@ without requiring any backend code changes. This demonstrates a scalable, decoup
 
 ---
 
-## 12. Deployment Options
+## 14. Deployment Options
 
 The Flask REST API and dashboard can be deployed to production using:
 * **Render** / **Railway**: Simply link your GitHub repository, configure `python backend/app.py` as the entrypoint, and run.
@@ -253,7 +283,7 @@ The Flask REST API and dashboard can be deployed to production using:
 
 ---
 
-## 13. Troubleshooting
+## 15. Troubleshooting
 
 * **API returns Model not trained error (503)**:
   Ensure `datasets/creditcard.csv` is present in the workspace, and run `python models/train_model.py` to compile `models/fraud_model.pkl`.
@@ -264,12 +294,12 @@ The Flask REST API and dashboard can be deployed to production using:
 
 ---
 
-## 14. Conclusion
+## 16. Conclusion
 
 This project demonstrates an IoT-ready Machine Learning architecture for credit card fraud detection. The modular software design enables seamless integration with future ESP32 hardware while maintaining a scalable, secure, and extensible backend suitable for academic demonstrations and future enhancements.
 
 ---
 
-## 15. License
+## 17. License
 
 Distributed under the MIT License. See `LICENSE` for more information.

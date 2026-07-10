@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="row g-4">
-    <div class="col-12">
+    <div class="col-12 col-xl-8">
         <div class="glass-card p-4 shadow-lg border-1">
             <h2 class="fw-bold tracking-tight mb-2">About ApexGuard</h2>
             <p class="text-muted">An IoT-ready Machine Learning system for real-time transaction validation.</p>
@@ -29,6 +29,33 @@
             <h5 class="fw-bold text-info mb-3">Future IoT Development Scope</h5>
             <p class="text-muted-light mb-0">
                 In future releases, physical ESP32 boards equipped with RFID-RC522 modules and SPI controllers will connect to ApexGuard's endpoints over local Wi-Fi, allowing physical cards or tags to trigger live transaction assessments, outputting instant security alerts on hardware LEDs or LCD displays.
+            </p>
+        </div>
+    </div>
+
+    <!-- About Dataset Sidebar (4 columns) -->
+    <div class="col-12 col-xl-4">
+        <div class="glass-card p-4 shadow-lg border-1 h-100">
+            <h4 class="fw-bold text-info mb-3"><i class="bi bi-database me-2"></i>About the Dataset</h4>
+            
+            <h6 class="fw-bold text-white mb-1">Context</h6>
+            <p class="small text-muted-light mb-3">
+                It is important that credit card companies are able to recognize fraudulent credit card transactions so that customers are not charged for items that they did not purchase.
+            </p>
+
+            <h6 class="fw-bold text-white mb-1">Content & Imbalance</h6>
+            <p class="small text-muted-light mb-3">
+                The dataset contains transactions made by credit cards in September 2013 by European cardholders. It presents transactions that occurred in two days, with 492 frauds out of 284,807 transactions. The dataset is highly unbalanced; the positive class (frauds) accounts for only 0.172% of all transactions.
+            </p>
+
+            <h6 class="fw-bold text-white mb-1">PCA Transformation</h6>
+            <p class="small text-muted-light mb-3">
+                Features V1–V28 are PCA principal components. The only features not transformed are 'Time' (seconds elapsed since the first transaction) and 'Amount' (transaction amount, suitable for cost-sensitive learning). 'Class' takes value 1 for fraud and 0 otherwise.
+            </p>
+
+            <h6 class="fw-bold text-white mb-1">Acknowledgements</h6>
+            <p class="small text-muted mb-0">
+                Collected and analysed by Worldline and the Machine Learning Group (MLG) of Université Libre de Bruxelles (ULB).
             </p>
         </div>
     </div>
