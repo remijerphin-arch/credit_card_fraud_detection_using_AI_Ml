@@ -27,3 +27,9 @@ CreditCardFraud/logs/application.log
 # OS files
 .DS_Store
 Thumbs.db
+
+# Datasets and Large Files
+CreditCardFraud/datasets/
+dataset/
+*.csv
+*.pkl

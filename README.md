@@ -1,60 +1,263 @@
-# Credit-Card-Fraud-Detection-Using-Machine-Learning
+# IoT-Ready AI-Driven Credit Card Fraud Detection System
 
- ## ABSTRACT
-Credit card fraud is a significant problem, with billions of dollars lost each year. Machine learning can be used to detect credit card fraud by identifying patterns that are indicative of fraudulent transactions. Credit card fraud refers to the physical loss of a credit card or the loss of sensitive credit card information. Many machinelearning algorithms can be used for detection. This project proposes to develop a machine-learning model to detect credit card fraud. The model will be trained on a dataset of historical credit card transactions and evaluated on a holdout dataset of unseen transactions.
-<br>
-<br>
-<b>Keywords:</b> Credit Card Fraud Detection, Fraud Detection, Fraudulent Transactions, K- Nearest Neighbors, Support Vector Machine, Logistic Regression, Decision Tree.
+![Project Banner](CreditCardFraud/static/images/banner.png)
 
-<br>
-<br>
+<div align="center">
 
-## Overview
+![Python](https://img.shields.io/badge/Python-3.11+-blue?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0+-black?style=for-the-badge&logo=flask&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3.0+-blue?style=for-the-badge&logo=sqlite&logoColor=white)
+![Machine Learning](https://img.shields.io/badge/Machine%20Learning-RandomForest-orange?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-With the increase of people using credit cards in their daily lives, credit card companies should take special care of the security and safety of the customers. According to (Credit card statistics 2021), the number of people using credit cards worldwide was 2.8 billion in 2019; also, 70those users own a single card. Reports of Credit card fraud in the U.S. rose by 44.7in 2020. There are two kinds of credit card fraud, and the first is having a credit card account opened under your name by an identity thief. Reports of this fraudulent behaviour increased 48to 2020. The second type is when an identity thief uses an existing account you created, usually by stealing the
-information on the credit card. Reports on this type of Fraud increased 9to 2020(Daly, 2021). Those statistics caught We’s attention as the numbers have increased drastically and rapidly throughout the years, which motivated We to resolve the issue analytically by using different machine learning methods to detect fraudulent credit card transactions within numerous transactions.
+</div>
 
-<br>
-<br>
+---
 
-## Project goals
+The project has been implemented as an IoT-ready prototype featuring a modular architecture based on Machine Learning, REST APIs, SQLite, and a web-based dashboard. The software is designed to support future ESP32 integration through standardized REST API communication.
 
-The main aim of this project is the detection of fraudulent credit card transactions, as it is essential to figure out the fraudulent transactions so that customers do not get charged for the purchase of products that they did not buy. Fraudulent Credit card transactions will be detected with multiple ML techniques. Then, a comparison will be made between the outcomes and results of each method to find the best and most suited model for detecting fraudulent credit card transactions; graphs and numbers will also be provided. In addition, it explores previous literature and different
-techniques used to distinguish Fraud within a dataset.
+---
 
+## 1. Project Objectives
 
-<br>
-<br>
+* Detect fraudulent credit card transactions.
+* Build a scalable Machine Learning system.
+* Provide REST APIs for future IoT devices.
+* Maintain transaction history.
+* Visualize fraud analytics.
+* Prepare the architecture for future ESP32 integration.
 
-## Data Source
+---
 
-The dataset was retrieved from an open-source website, Kaggle.com. It contains data on transactions made in 2013 by European credit card users in two days only. Thedataset consists of 31 attributes and 284,808 rows. Twenty-eight attributes are numeric variables that, due to the confidentiality and privacy of the customers, have been transformed using PCA transformation; the three remaining attributes are ”Time”, which contains the elapsed seconds between the first and other transactions
-of each Attribute, ”Amount” is the amount of each transaction, and the final attribute “Class” which contains binary variableswhere “1” is a case of fraudulent transaction, and “0” is not as case of fraudulent transaction.
-<br>
-<br>
-<b>Dataset: </b>
-<a href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud">kaggle Dataset</a>
+## 2. Technology Stack
 
-<br>
-<br>
+* **Frontend**: HTML5, CSS3, Bootstrap 5, JavaScript, Chart.js.
+* **Backend**: Python, Flask, REST APIs.
+* **Machine Learning**: Scikit-learn, RandomForestClassifier, Pandas, NumPy.
+* **Database**: SQLite.
+* **Development Tools**: VS Code, Git / GitHub.
+* **Future IoT Hardware**: ESP32, RFID RC522, Wi-Fi Module.
 
-## Algorithm 
-1. K-Nearest Neighbor (KNN)
-2. Logistic Regression (L.R.)
-3. Support Vector Machine (SVM)
-4. Decision Tree (D.T.)
+---
 
+## 3. System Architecture Overview
 
-<br>
-<br>
+![Architecture Diagram](CreditCardFraud/static/images/architecture.png)
 
-## Future Work 
-There are many ways to improve the model, such as using it on different datasets with various sizes and data types or by changing the data splitting ratio and viewing it from a different algorithm perspective. An example can be merging telecom datato calculate the location of people to have better knowledge of the location of the card owner while his/her credit card is being used; this will ease the detection because if the card owner is in Dubai and a transaction of his card was made in Abu Dhabi, it
-will easily be detected as Fraud.
+```text
+User / ESP32
+     │
+     ▼
+Transaction Data
+     │
+     ▼
+REST API (Flask)
+     │
+     ▼
+Input Validation
+     │
+     ▼
+Feature Mapping (iot_feature_mapper.py)
+     │
+     ▼
+Machine Learning Model (fraud_model.pkl)
+     │
+     ▼
+Prediction Outcome ("Fraud" or "Genuine")
+     │
+     ▼
+SQLite Database (transactions.db)
+     │
+     ▼
+Dashboard & Analytics (Chart.js widgets)
+```
 
-<br>
-<br>
+Both the Web Interface (manual entry and simulation) and future ESP32 hardware communicate using the exact same REST API route: `POST /api/v1/predict`.
 
-## Conclusion
-In conclusion, the main objective of this project was to find the most suited model for creditcard fraud detection in terms of the machine learning techniques chosen for the project. It was met by building the four models and finding the accuracies of them all; the best in terms of accuracy is KNN and Decision Tree, which scored 100 on credit card fraud and increased the customer’s satisfaction as it will provide themwith a better experience and feeling secure.
+---
 
+## 4. Key Features
+
+### Implemented Features
+* **AI-based Fraud Detection**: RandomForest classifier trained on Kaggle creditcard logs.
+* **REST API Integration**: Standardised and versioned endpoints for model predictions, stats, and logs.
+* **Real-time Dashboard**: Interactive UI summarizing transaction history.
+* **Analytics Dashboard**: Comprehensive data views showing trend ratios and amount ranges.
+* **Transaction Monitoring**: Log monitor tracking live transaction outputs.
+* **SQLite Transaction Logging**: Persistent and parameterized ledger database.
+* **IoT-ready Architecture**: Decoupled backend design welcoming future micro-controllers.
+* **Modular Software Architecture**: Decoupled layers separating routes, services, models, database, and configurations.
+
+### Simulated Features
+* **ESP32 Simulation Console**: Trigger buttons to simulate card-terminal transactions locally.
+* **Device Status Monitoring**: Simulated reader telemetry logs (WiFi connection, RSSI dBm, battery life).
+
+### Future Enhancements
+* **Live ESP32 Hardware Integration**: Connecting physical ESP32 boards with RFID reader modules.
+* **Physical payment support**: RFID payment readers and NFC payment hardware.
+* **Spatial & security checks**: GPS-based transaction validation and biometric verification (fingerprint/face recognition).
+* **Alert notifications**: SMTP email and Twilio SMS warning notifications on fraudulent events.
+
+---
+
+## 5. Expected Output
+
+* **Normal Transaction**:
+  * Transaction accepted.
+  * Stored in SQLite database.
+  * Web Dashboard and Analytics charts updated.
+  * Low risk score displayed.
+* **Fraudulent Transaction**:
+  * Fraud detected.
+  * High risk score displayed.
+  * Logged into database.
+  * Future alert service triggered (alert logged in system logs).
+
+---
+
+## 6. Project Screenshots Mockups
+
+### Premium Dashboard
+![Dashboard Screenshot](CreditCardFraud/static/images/dashboard.png)
+
+### Security Intelligence Analytics
+![Analytics Screenshot](CreditCardFraud/static/images/analytics.png)
+
+### ESP32 Simulation Console
+![Simulation Screenshot](CreditCardFraud/static/images/simulation.png)
+
+---
+
+## 7. Security Features
+
+* **Input Validation**: Strictly validates types and bounds on all incoming parameters before prediction processing.
+* **Server-side Validation**: Validates the presence of the model file and valid classification configurations before inference is triggered.
+* **Secure Database Logging**: Uses parametrized queries in SQLite to completely prevent SQL injection vulnerabilities.
+* **Role-Based Login**: Access controls limiting access to Admin and Analyst roles.
+* **JWT/API-Key Ready**: Headers are validated, preparing the backend middleware for token authentication.
+* **Error Handling**: Graceful error handlers return standard JSON response formats for malformed payloads.
+
+---
+
+## 8. System Requirements
+
+* **Python**: 3.11+
+* **System Memory**: 8 GB RAM
+* **Operating System**: Windows / Linux / macOS
+* **Browser**: Modern web browser (Chrome, Edge, Firefox, Safari)
+* **Storage Engine**: SQLite (built-in)
+
+---
+
+## 9. How to Run the Project
+
+### Step 1: Install dependencies
+Navigate to the root directory and install requirements:
+```bash
+pip install -r requirements.txt
+```
+
+### Step 2: Place the dataset
+Place the Kaggle Credit Card Fraud Detection dataset (`creditcard.csv`) inside the `datasets/` folder:
+`datasets/creditcard.csv`
+
+### Step 3: Train the model
+Train the RandomForest model using:
+```bash
+python models/train_model.py
+```
+*Note: If the dataset file is missing, the script will exit gracefully without training.*
+
+### Step 4: Run the application
+Run the Flask server driver:
+```bash
+python backend/app.py
+```
+
+### Step 5: Open the browser
+Navigate to:
+`http://127.0.0.1:5000`
+
+Log in using the provided Admin or Analyst credentials. Default demonstration credentials (e.g. usernames `Admin` / `Analyst` and passwords `admin` / `analyst`) can be modified through the application configuration.
+
+---
+
+## 10. Example REST API Request
+
+### Example IoT Transaction Payload:
+* **HTTP Method**: `POST`
+* **Path**: `/api/v1/predict`
+* **Content-Type**: `application/json`
+
+```json
+{
+  "card_id": "CARD1001",
+  "amount": 2500,
+  "merchant": "Amazon",
+  "transaction_time": "14:35:20",
+  "location": "Bangalore",
+  "device_id": "ESP32-001",
+  "transaction_type": "Online",
+  "latitude": 12.9716,
+  "longitude": 77.5946
+}
+```
+
+### Example Response (Genuine):
+```json
+{
+  "prediction": "Genuine",
+  "risk_score": 0.08
+}
+```
+
+### Example Response (Fraud):
+```json
+{
+  "prediction": "Fraud",
+  "risk_score": 0.94
+}
+```
+
+---
+
+## 11. Future Hardware Note
+
+The current implementation provides a complete software prototype and an IoT-ready architecture. The backend, REST APIs, dashboard, and Machine Learning pipeline are fully prepared for future ESP32 integration.
+
+When an ESP32 micro-controller is introduced in the future, it can communicate with the backend simply by sending transaction payloads to:
+`POST /api/v1/predict`
+without requiring any backend code changes. This demonstrates a scalable, decoupled IoT architecture.
+
+---
+
+## 12. Deployment Options
+
+The Flask REST API and dashboard can be deployed to production using:
+* **Render** / **Railway**: Simply link your GitHub repository, configure `python backend/app.py` as the entrypoint, and run.
+* **Docker**: Build a Docker container using a standard python alpine base, exposing port `5000`.
+* **Raspberry Pi**: Ideal for local network testing; run the server directly on the Raspberry Pi and connect the ESP32 to the Pi's IP address.
+* **Cloud VMs** (AWS EC2, Google Cloud Compute): Set up python, bind to port `80/443`, and point ESP32 terminals to the public IP or domain.
+
+---
+
+## 13. Troubleshooting
+
+* **API returns Model not trained error (503)**:
+  Ensure `datasets/creditcard.csv` is present in the workspace, and run `python models/train_model.py` to compile `models/fraud_model.pkl`.
+* **Database lock issues**:
+  Restart the server application. SQLite connection factory functions automatically close connection handles to prevent write collisions.
+* **Flask port 5000 in use**:
+  Run the server on another port by modifying `app.run(port=5001)` in `backend/app.py`.
+
+---
+
+## 14. Conclusion
+
+This project demonstrates an IoT-ready Machine Learning architecture for credit card fraud detection. The modular software design enables seamless integration with future ESP32 hardware while maintaining a scalable, secure, and extensible backend suitable for academic demonstrations and future enhancements.
+
+---
+
+## 15. License
+
+Distributed under the MIT License. See `LICENSE` for more information.

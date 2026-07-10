@@ -1,10 +1,48 @@
 # IoT-Ready AI-Driven Credit Card Fraud Detection System
 
+![Project Banner](static/images/banner.png)
+
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.11+-blue?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0+-black?style=for-the-badge&logo=flask&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3.0+-blue?style=for-the-badge&logo=sqlite&logoColor=white)
+![Machine Learning](https://img.shields.io/badge/Machine%20Learning-RandomForest-orange?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+</div>
+
+---
+
 The project has been implemented as an IoT-ready prototype featuring a modular architecture based on Machine Learning, REST APIs, SQLite, and a web-based dashboard. The software is designed to support future ESP32 integration through standardized REST API communication.
 
 ---
 
-## 1. Project Architecture Overview
+## 1. Project Objectives
+
+* Detect fraudulent credit card transactions.
+* Build a scalable Machine Learning system.
+* Provide REST APIs for future IoT devices.
+* Maintain transaction history.
+* Visualize fraud analytics.
+* Prepare the architecture for future ESP32 integration.
+
+---
+
+## 2. Technology Stack
+
+* **Frontend**: HTML5, CSS3, Bootstrap 5, JavaScript, Chart.js.
+* **Backend**: Python, Flask, REST APIs.
+* **Machine Learning**: Scikit-learn, RandomForestClassifier, Pandas, NumPy.
+* **Database**: SQLite.
+* **Development Tools**: VS Code, Git / GitHub.
+* **Future IoT Hardware**: ESP32, RFID RC522, Wi-Fi Module.
+
+---
+
+## 3. System Architecture Overview
+
+![Architecture Diagram](static/images/architecture.png)
 
 ```text
 User / ESP32
@@ -35,46 +73,6 @@ Dashboard & Analytics (Chart.js widgets)
 ```
 
 Both the Web Interface (manual entry and simulation) and future ESP32 hardware communicate using the exact same REST API route: `POST /api/v1/predict`.
-
----
-
-## 2. Project Objectives
-
-* Detect fraudulent credit card transactions.
-* Build a scalable Machine Learning system.
-* Provide REST APIs for future IoT devices.
-* Maintain transaction history.
-* Visualize fraud analytics.
-* Prepare the architecture for future ESP32 integration.
-
----
-
-## 3. Technology Stack
-
-* **Frontend**:
-  * HTML5
-  * CSS3
-  * Bootstrap 5
-  * JavaScript
-  * Chart.js
-* **Backend**:
-  * Python
-  * Flask
-  * REST APIs
-* **Machine Learning**:
-  * Scikit-learn
-  * RandomForestClassifier
-  * Pandas
-  * NumPy
-* **Database**:
-  * SQLite
-* **Development Tools**:
-  * VS Code
-  * Git / GitHub
-* **Future IoT Hardware**:
-  * ESP32
-  * RFID RC522
-  * Wi-Fi Module
 
 ---
 
@@ -117,7 +115,20 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 6. Security Features
+## 6. Project Screenshots Mockups
+
+### Premium Dashboard
+![Dashboard Screenshot](static/images/dashboard.png)
+
+### Security Intelligence Analytics
+![Analytics Screenshot](static/images/analytics.png)
+
+### ESP32 Simulation Console
+![Simulation Screenshot](static/images/simulation.png)
+
+---
+
+## 7. Security Features
 
 * **Input Validation**: Strictly validates types and bounds on all incoming parameters before prediction processing.
 * **Server-side Validation**: Validates the presence of the model file and valid classification configurations before inference is triggered.
@@ -128,7 +139,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 7. System Requirements
+## 8. System Requirements
 
 * **Python**: 3.11+
 * **System Memory**: 8 GB RAM
@@ -138,7 +149,7 @@ Both the Web Interface (manual entry and simulation) and future ESP32 hardware c
 
 ---
 
-## 8. How to Run the Project
+## 9. How to Run the Project
 
 ### Step 1: Install dependencies
 Navigate to the root directory and install requirements:
@@ -171,7 +182,7 @@ Log in using the provided Admin or Analyst credentials. Default demonstration cr
 
 ---
 
-## 9. Example REST API Request
+## 10. Example REST API Request
 
 ### Example IoT Transaction Payload:
 * **HTTP Method**: `POST`
@@ -210,7 +221,7 @@ Log in using the provided Admin or Analyst credentials. Default demonstration cr
 
 ---
 
-## 10. Future Hardware Note
+## 11. Future Hardware Note
 
 The current implementation provides a complete software prototype and an IoT-ready architecture. The backend, REST APIs, dashboard, and Machine Learning pipeline are fully prepared for future ESP32 integration.
 
@@ -220,7 +231,7 @@ without requiring any backend code changes. This demonstrates a scalable, decoup
 
 ---
 
-## 11. Deployment Options
+## 12. Deployment Options
 
 The Flask REST API and dashboard can be deployed to production using:
 * **Render** / **Railway**: Simply link your GitHub repository, configure `python backend/app.py` as the entrypoint, and run.
@@ -230,7 +241,7 @@ The Flask REST API and dashboard can be deployed to production using:
 
 ---
 
-## 12. Troubleshooting
+## 13. Troubleshooting
 
 * **API returns Model not trained error (503)**:
   Ensure `datasets/creditcard.csv` is present in the workspace, and run `python models/train_model.py` to compile `models/fraud_model.pkl`.
@@ -241,6 +252,12 @@ The Flask REST API and dashboard can be deployed to production using:
 
 ---
 
-## 13. Conclusion
+## 14. Conclusion
 
 This project demonstrates an IoT-ready Machine Learning architecture for credit card fraud detection. The modular software design enables seamless integration with future ESP32 hardware while maintaining a scalable, secure, and extensible backend suitable for academic demonstrations and future enhancements.
+
+---
+
+## 15. License
+
+Distributed under the MIT License. See `LICENSE` for more information.

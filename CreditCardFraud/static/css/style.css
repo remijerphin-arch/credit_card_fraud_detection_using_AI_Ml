@@ -6,8 +6,8 @@
     --glass-bg-hover: rgba(35, 30, 70, 0.45);
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-border-hover: rgba(255, 255, 255, 0.15);
-    --text-muted: #8c89a0;
-    --text-muted-light: #b5b2c9;
+    --text-muted: #b5b2c9; /* Lighter text color for readability in dark theme */
+    --text-muted-light: #d1cfdf;
     --primary-gradient: linear-gradient(90deg, #0dcaf0, #0d6efd);
     --danger-gradient: linear-gradient(90deg, #ff3366, #dc3545);
     --purple: #a154ff;
@@ -19,12 +19,38 @@
     --dark-opacity: rgba(0, 0, 0, 0.4);
 }
 
-body.dark-theme {
+/* Light Theme Variables */
+html.light-theme {
+    --bg-gradient: linear-gradient(135deg, #f3f2f7 0%, #e9e7f2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-bg-hover: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(0, 0, 0, 0.09);
+    --glass-border-hover: rgba(0, 0, 0, 0.15);
+    --text-muted: #5c5970; /* Darker muted text for readability in light theme */
+    --text-muted-light: #3c3a4a;
+    --dark-opacity: rgba(255, 255, 255, 0.4);
+}
+
+body {
     background: var(--bg-gradient);
     background-attachment: fixed;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #f1f0f6;
     min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme {
+    color: #f1f0f6;
+}
+
+html.light-theme body {
+    color: #1a1824;
+}
+
+/* Override Bootstrap text-muted utility for readability */
+.text-muted {
+    color: var(--text-muted) !important;
 }
 
 /* Typography settings */
@@ -41,10 +67,13 @@ body.dark-theme {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 .text-muted-light {
-    color: var(--text-muted-light);
+    color: var(--text-muted-light) !important;
 }
 .text-muted-opacity {
     color: rgba(255, 255, 255, 0.35);
+}
+html.light-theme .text-muted-opacity {
+    color: rgba(0, 0, 0, 0.45);
 }
 
 /* Glassmorphism Cards */
@@ -58,7 +87,7 @@ body.dark-theme {
 }
 .glass-card:hover {
     border-color: var(--glass-border-hover);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
 }
 
@@ -76,6 +105,17 @@ body.dark-theme {
     -webkit-backdrop-filter: blur(25px);
     border-right: 1px solid var(--glass-border);
     z-index: 1030;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+html.light-theme .glass-sidebar {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--glass-border);
+}
+
+/* Sidebar text overrides for light theme */
+html.light-theme .glass-sidebar .text-white, 
+html.light-theme .glass-sidebar .nav-link:not(.active-pill) {
+    color: #1a1824 !important;
 }
 
 /* Pill Navigation Buttons */
@@ -89,10 +129,17 @@ body.dark-theme {
     background-color: rgba(255, 255, 255, 0.05);
     color: #fff;
 }
+html.light-theme .nav-pills .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000;
+}
 .nav-pills .nav-link.active-pill {
     background: var(--primary-gradient);
     color: #0c0916 !important;
     font-weight: 600;
+}
+html.light-theme .nav-pills .nav-link.active-pill {
+    color: #ffffff !important;
 }
 
 /* Custom Badges & Banners */
@@ -101,6 +148,11 @@ body.dark-theme {
     border: 1px solid var(--glass-border);
     color: #fff;
 }
+html.light-theme .glass-badge {
+    background: rgba(0, 0, 0, 0.03);
+    color: #1a1824;
+}
+
 .bg-success-opacity {
     background-color: var(--success-opacity) !important;
 }
@@ -133,6 +185,10 @@ body.dark-theme {
     border: 1px solid var(--glass-border);
     color: #fff;
 }
+html.light-theme .glass-alert {
+    background: rgba(0, 0, 0, 0.03);
+    color: #1a1824;
+}
 
 /* Input Fields */
 .glass-input {
@@ -142,6 +198,11 @@ body.dark-theme {
     border-radius: 8px !important;
     transition: all 0.2s ease-in-out !important;
 }
+html.light-theme .glass-input {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #1a1824 !important;
+}
 .glass-input:focus {
     border-color: #0dcaf0 !important;
     box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.2) !important;
@@ -149,11 +210,18 @@ body.dark-theme {
 .glass-input::placeholder {
     color: rgba(255, 255, 255, 0.25) !important;
 }
+html.light-theme .glass-input::placeholder {
+    color: rgba(0, 0, 0, 0.4) !important;
+}
 
 .glass-input-group {
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
+}
+html.light-theme .glass-input-group {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
 }
 .glass-input-group:focus-within {
     border-color: #0dcaf0;
@@ -167,22 +235,39 @@ body.dark-theme {
     color: #fff;
     transition: all 0.2s ease-in-out;
 }
+html.light-theme .glass-button {
+    background: rgba(0, 0, 0, 0.03);
+    color: #1a1824;
+}
 .glass-button:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: var(--glass-border-hover);
     color: #fff;
+}
+html.light-theme .glass-button:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #000;
 }
 
 /* Table Style */
 .glass-table {
     font-size: 0.9rem;
 }
+html.light-theme .glass-table {
+    color: #1a1824 !important;
+}
 .glass-table th {
     border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
     font-weight: 600;
 }
+html.light-theme .glass-table th {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08) !important;
+}
 .glass-table td {
     border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+html.light-theme .glass-table td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Custom terminal code block */
@@ -193,6 +278,11 @@ body.dark-theme {
     overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-all;
+    color: #f1f0f6;
+}
+html.light-theme .glass-terminal {
+    background: #1a1824;
+    color: #f1f0f6;
 }
 
 /* Icon Circle */
